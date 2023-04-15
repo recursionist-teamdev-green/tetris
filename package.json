@@ -18,6 +18,9 @@
   "homepage": "https://github.com/recursionist-teamdev-green/tetris#readme",
   "dependencies": {
     "@types/node": "^18.15.11",
+    "canvas": "^2.11.2"
+  },
+  "devDependencies": {
     "typescript": "^5.0.4"
   }
 }
