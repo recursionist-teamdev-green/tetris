@@ -1,20 +1,29 @@
-var sizeConfig = {
-    "box": 30,
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var tetrominos_1 = require("./tetrominos");
+var size = {
+    "box": 20,
     "fieldX": 10,
     "fieldY": 20,
 };
-var stage = new createjs.Stage("canvas");
+var control = {
+    "start": document.getElementById("start"),
+};
 var init = function () {
+    var stage = new createjs.Stage("canvas");
     var gameField = new createjs.Shape();
-    gameField.graphics.beginStroke("Dark");
-    gameField.graphics.setStrokeStyle(3, 2);
-    gameField.graphics.rect(0, 0, sizeConfig.box * sizeConfig.fieldX, sizeConfig.box * sizeConfig.fieldY);
-    //   const child = new createjs.Shape();
-    //   child.graphics.beginFill("Dark"); 
-    //   child.graphics.rect(0, 0, 30, 30); 
-    //   stage.addChild(child)
+    gameField.graphics.beginStroke("Dark").setStrokeStyle(3, 2);
+    gameField.graphics.rect(0, 0, size.box * size.fieldX, size.box * size.fieldY);
     stage.addChild(gameField);
+    var child = new createjs.Shape();
+    child.graphics.beginFill("Dark");
+    child.graphics.rect(0, 0, size.box, size.box);
+    stage.addChild(child);
+    // play
+    // control.start?.addEventListener("click", play);
+    // function play(){
+    // }
+    console.log(tetrominos_1.default[0]);
     stage.update();
 };
-var game = ();
-window.addEventListener("load", init);
+window.addEventListener('load', init);

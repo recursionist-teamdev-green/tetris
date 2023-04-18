@@ -1,4 +1,6 @@
-const TETROMINOS = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var TETROMINOS = [
     {
         "shape": [
             [0, 1, 0, 0],
@@ -46,9 +48,9 @@ const TETROMINOS = [
     },
     {
         "shape": [
-            [0, 0, 0, 0],
-            [1, 1, 1, 0],
             [0, 1, 0, 0],
+            [1, 1, 1, 0],
+            [0, 0, 0, 0],
             [0, 0, 0, 0]
         ],
         "color": '125, 5, 190'
@@ -62,8 +64,5 @@ const TETROMINOS = [
         ],
         "color": '185, 5, 190'
     }
-]
-
-console.log(TETROMINOS)
-
-export default TETROMINOS;
+];
+exports.default = TETROMINOS;
