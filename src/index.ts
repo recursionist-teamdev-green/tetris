@@ -22,7 +22,7 @@ const init = () => {
     
     const child = new createjs.Shape();
     child.graphics.beginFill("Dark"); 
-    child.graphics.rect(0, 0, size.box, size.box); 
+    child.graphics.rect(size.box, size.box, size.box, size.box); 
     stage.addChild(child)
 
     // play
