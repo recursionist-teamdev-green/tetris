@@ -1,0 +1,5 @@
+/* 描画がぶれるため、canvasタグに直書き
+canvas{
+    width: 50%;
+    height: 75%;
+} */

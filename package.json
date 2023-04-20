@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node --files -r tsconfig-paths/register"
+    "test": "nodemon",
+    "start": "webpack serve",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -18,11 +19,16 @@
   },
   "homepage": "https://github.com/recursionist-teamdev-green/tetris#readme",
   "dependencies": {
+    "@types/createjs": "^0.0.29",
     "@types/node": "^18.15.11",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.0.4"
   },
   "devDependencies": {
-    "ts-node": "^10.9.1"
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "webpack": "^5.79.0",
+    "webpack-cli": "^5.0.1",
+    "webpack-dev-server": "^4.13.3"
   }
 }
