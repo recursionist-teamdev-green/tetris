@@ -10,23 +10,43 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/components/Minos.ts":
+/*!*********************************!*\
+  !*** ./src/components/Minos.ts ***!
+  \*********************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.Minos = void 0;\nconst tetrominos_1 = __webpack_require__(/*! ./block/tetrominos */ \"./src/components/block/tetrominos.ts\");\nconst sizeConfig_1 = __webpack_require__(/*! ./block/sizeConfig */ \"./src/components/block/sizeConfig.ts\");\nclass Minos extends createjs.Container {\n    constructor() {\n        super();\n        const randomNum = Math.floor(Math.random() * 7);\n        const template = tetrominos_1.tetrominos[randomNum];\n        for (let i = 0; i < template.shape.length; i++) {\n            for (let j = 0; j < template.shape[i].length; j++) {\n                if (template.shape[i][j]) {\n                    let box = new createjs.Shape();\n                    let px = j * sizeConfig_1.size.box;\n                    let py = i * sizeConfig_1.size.box;\n                    box.graphics.beginFill(template.color);\n                    box.graphics.rect(px, py, sizeConfig_1.size.box, sizeConfig_1.size.box);\n                    this.addChild(box);\n                }\n            }\n        }\n    }\n    move(keyDown) {\n        if (keyDown.code == \"ArrowRight\")\n            this.x += sizeConfig_1.size.box;\n        else if (keyDown.code == \"ArrowLeft\")\n            this.x -= sizeConfig_1.size.box;\n        else if (keyDown.code == \"ArrowDown\")\n            this.y += sizeConfig_1.size.box;\n    }\n}\nexports.Minos = Minos;\n\n\n//# sourceURL=webpack://tetris/./src/components/Minos.ts?");
+
+/***/ }),
+
+/***/ "./src/components/block/sizeConfig.ts":
+/*!********************************************!*\
+  !*** ./src/components/block/sizeConfig.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.size = void 0;\nexports.size = {\n    \"box\": 30,\n    \"fieldX\": 12,\n    \"fieldY\": 20,\n};\n\n\n//# sourceURL=webpack://tetris/./src/components/block/sizeConfig.ts?");
+
+/***/ }),
+
+/***/ "./src/components/block/tetrominos.ts":
+/*!********************************************!*\
+  !*** ./src/components/block/tetrominos.ts ***!
+  \********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nexports.tetrominos = void 0;\nexports.tetrominos = [\n    {\n        \"shape\": [\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [0, 1, 0, 0]\n        ],\n        \"color\": 'rgb(190, 10, 5)'\n    },\n    {\n        \"shape\": [\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [1, 1, 0, 0],\n            [0, 0, 0, 0],\n        ],\n        \"color\": 'rgb(170, 190, 5)'\n    },\n    {\n        \"shape\": [\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [0, 1, 1, 0],\n            [0, 0, 0, 0],\n        ],\n        \"color\": 'rgb(50, 190, 5)'\n    },\n    {\n        \"shape\": [\n            [0, 1, 1, 0],\n            [0, 1, 1, 0],\n            [0, 0, 0, 0],\n            [0, 0, 0, 0],\n        ],\n        \"color\": 'rgb(5, 190, 160)'\n    },\n    {\n        \"shape\": [\n            [0, 1, 1, 0],\n            [1, 1, 0, 0],\n            [0, 0, 0, 0],\n            [0, 0, 0, 0]\n        ],\n        \"color\": 'rgb(15, 5, 190)'\n    },\n    {\n        \"shape\": [\n            [0, 1, 0, 0],\n            [0, 1, 1, 0],\n            [0, 1, 0, 0],\n            [0, 0, 0, 0]\n        ],\n        \"color\": 'rgb(125, 5, 190)'\n    },\n    {\n        \"shape\": [\n            [0, 1, 1, 0],\n            [0, 0, 1, 1],\n            [0, 0, 0, 0],\n            [0, 0, 0, 0]\n        ],\n        \"color\": 'rgb(185, 5, 190)'\n    }\n];\n\n\n//# sourceURL=webpack://tetris/./src/components/block/tetrominos.ts?");
+
+/***/ }),
+
 /***/ "./src/index.ts":
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-eval("\nvar __importDefault = (this && this.__importDefault) || function (mod) {\n    return (mod && mod.__esModule) ? mod : { \"default\": mod };\n};\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst tetrominos_1 = __importDefault(__webpack_require__(/*! ./tetrominos */ \"./src/tetrominos.ts\"));\nconst size = {\n    \"box\": 20,\n    \"fieldX\": 10,\n    \"fieldY\": 20,\n};\nconst control = {\n    \"start\": document.getElementById(\"start\"),\n};\nconst init = () => {\n    const stage = new createjs.Stage(\"canvas\");\n    const gameField = new createjs.Shape();\n    gameField.graphics.beginStroke(\"Dark\").setStrokeStyle(3, 2);\n    gameField.graphics.rect(0, 0, size.box * size.fieldX, size.box * size.fieldY);\n    stage.addChild(gameField);\n    const child = new createjs.Shape();\n    child.graphics.beginFill(\"Dark\");\n    child.graphics.rect(0, 0, size.box, size.box);\n    stage.addChild(child);\n    // play\n    // control.start?.addEventListener(\"click\", play);\n    // function play(){\n    // }\n    console.log(tetrominos_1.default[0]);\n    stage.update();\n};\nwindow.addEventListener('load', init);\n\n\n//# sourceURL=webpack://tetris/./src/index.ts?");
-
-/***/ }),
-
-/***/ "./src/tetrominos.ts":
-/*!***************************!*\
-  !*** ./src/tetrominos.ts ***!
-  \***************************/
-/***/ ((__unused_webpack_module, exports) => {
-
-eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst TETROMINOS = [\n    {\n        \"shape\": [\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [0, 1, 0, 0]\n        ],\n        \"color\": '190, 10, 5'\n    },\n    {\n        \"shape\": [\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [1, 1, 0, 0],\n            [0, 0, 0, 0],\n        ],\n        \"color\": '170, 190, 5'\n    },\n    {\n        \"shape\": [\n            [0, 1, 0, 0],\n            [0, 1, 0, 0],\n            [0, 1, 1, 0],\n            [0, 0, 0, 0],\n        ],\n        \"color\": '50, 190, 5'\n    },\n    {\n        \"shape\": [\n            [0, 1, 1, 0],\n            [0, 1, 1, 0],\n            [0, 0, 0, 0],\n            [0, 0, 0, 0],\n        ],\n        \"color\": '5, 190, 160'\n    },\n    {\n        \"shape\": [\n            [0, 1, 1, 0],\n            [1, 1, 0, 0],\n            [0, 0, 0, 0],\n            [0, 0, 0, 0]\n        ],\n        \"color\": '15, 5, 190'\n    },\n    {\n        \"shape\": [\n            [0, 0, 0, 0],\n            [1, 1, 1, 0],\n            [0, 1, 0, 0],\n            [0, 0, 0, 0]\n        ],\n        \"color\": '125, 5, 190'\n    },\n    {\n        \"shape\": [\n            [1, 1, 0, 0],\n            [0, 1, 1, 0],\n            [0, 0, 0, 0],\n            [0, 0, 0, 0]\n        ],\n        \"color\": '185, 5, 190'\n    }\n];\nconsole.log(TETROMINOS);\nexports[\"default\"] = TETROMINOS;\n\n\n//# sourceURL=webpack://tetris/./src/tetrominos.ts?");
+eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\nconst sizeConfig_1 = __webpack_require__(/*! ./components/block/sizeConfig */ \"./src/components/block/sizeConfig.ts\");\nconst Minos_1 = __webpack_require__(/*! ./components/Minos */ \"./src/components/Minos.ts\");\nconst control = {\n    \"start\": document.getElementById(\"start\"),\n};\nconst init = () => {\n    const stage = new createjs.Stage(\"canvas\");\n    const gameField = new createjs.Shape();\n    gameField.graphics.beginStroke(\"Dark\").setStrokeStyle(3, 2);\n    gameField.graphics.rect(0, 0, sizeConfig_1.size.box * sizeConfig_1.size.fieldX, sizeConfig_1.size.box * sizeConfig_1.size.fieldY);\n    stage.addChild(gameField);\n    stage.update();\n    const mino = new Minos_1.Minos();\n    stage.addChild(mino);\n    document.addEventListener('keydown', e => {\n        mino.move(e);\n        stage.update();\n    });\n    stage.update();\n};\nwindow.addEventListener('load', init);\n\n\n//# sourceURL=webpack://tetris/./src/index.ts?");
 
 /***/ })
 
@@ -50,7 +70,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\ncons
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -60,7 +80,7 @@ eval("\nObject.defineProperty(exports, \"__esModule\", ({ value: true }));\ncons
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
 /******/ 	
 /******/ })()

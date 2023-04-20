@@ -1,4 +1,4 @@
-const TETROMINOS = [
+export const tetrominos = [
     {
         "shape": [
             [0, 1, 0, 0],
@@ -6,7 +6,7 @@ const TETROMINOS = [
             [0, 1, 0, 0],
             [0, 1, 0, 0]
         ],
-        "color": '190, 10, 5'
+        "color": 'rgb(190, 10, 5)'
     },
     {
         "shape": [
@@ -15,7 +15,7 @@ const TETROMINOS = [
             [1, 1, 0, 0],
             [0, 0, 0, 0],
         ],
-        "color": '170, 190, 5'
+        "color": 'rgb(170, 190, 5)'
     },
     {
         "shape": [
@@ -24,7 +24,7 @@ const TETROMINOS = [
             [0, 1, 1, 0],
             [0, 0, 0, 0],
         ],
-        "color": '50, 190, 5'
+        "color": 'rgb(50, 190, 5)'
     },
     {
         "shape": [
@@ -33,7 +33,7 @@ const TETROMINOS = [
             [0, 0, 0, 0],
             [0, 0, 0, 0],
         ],
-        "color": '5, 190, 160'
+        "color": 'rgb(5, 190, 160)'
     },
     {
         "shape": [
@@ -42,7 +42,7 @@ const TETROMINOS = [
             [0, 0, 0, 0],
             [0, 0, 0, 0]
         ],
-        "color": '15, 5, 190'
+        "color": 'rgb(15, 5, 190)'
     },
     {
         "shape": [
@@ -51,7 +51,7 @@ const TETROMINOS = [
             [0, 1, 0, 0],
             [0, 0, 0, 0]
         ],
-        "color": '125, 5, 190'
+        "color": 'rgb(125, 5, 190)'
     },
     {
         "shape": [
@@ -60,8 +60,6 @@ const TETROMINOS = [
             [0, 0, 0, 0],
             [0, 0, 0, 0]
         ],
-        "color": '185, 5, 190'
+        "color": 'rgb(185, 5, 190)'
     }
 ]
-
-export default TETROMINOS;
