@@ -1,4 +1,4 @@
-import TETROMINOS from './tetrominos';
+import Minos from "./components/Minos";
 
 type Size = {box: number, fieldX: number, fieldY: number};
 type Control = {start: HTMLElement | null}
@@ -20,17 +20,18 @@ const init = () => {
     gameField.graphics.rect(0, 0, size.box * size.fieldX, size.box * size.fieldY);
     stage.addChild(gameField); 
     
-    const child = new createjs.Shape();
-    child.graphics.beginFill("Dark"); 
-    child.graphics.rect(size.box, size.box, size.box, size.box); 
-    stage.addChild(child)
+    // const child = new createjs.Shape();
+    // child.graphics.beginFill("Dark"); 
+    // child.graphics.rect(size.box, size.box, size.box, size.box); 
+    // stage.addChild(child)
 
     // play
     // control.start?.addEventListener("click", play);
     // function play(){
 
     // }
-    console.log(TETROMINOS[0])
+    const block = new Minos();
+    stage.addChild(block)
 
     
     stage.update();
