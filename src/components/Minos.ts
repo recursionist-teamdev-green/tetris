@@ -21,7 +21,7 @@ export class Minos extends createjs.Container{
         }
     }
 
-    move(keyDown: KeyboardEvent){
+    move(keyDown: KeyboardEvent): void{
         if(keyDown.code == "ArrowRight") this.x += size.box;
         else if(keyDown.code == "ArrowLeft") this.x -= size.box;
         else if(keyDown.code == "ArrowDown") this.y += size.box;

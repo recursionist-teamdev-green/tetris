@@ -10,7 +10,7 @@ const control: Control = {
 const init = () => {
     const stage = new createjs.Stage("canvas");
     const gameField = new createjs.Shape();
-    gameField.graphics.beginStroke("Dark").setStrokeStyle(3,2); 
+    gameField.graphics.beginStroke("Dark").setStrokeStyle(5); 
     gameField.graphics.rect(0, 0, size.box * size.fieldX, size.box * size.fieldY);
     stage.addChild(gameField); 
     stage.update();
