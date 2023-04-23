@@ -1,8 +1,12 @@
 {
     "cSpell.words": [
         "createjs",
+        "gamefield",
+        "gamemanager",
+        "Gameover",
         "mino",
         "tetris",
+        "tetromino",
         "tetrominos"
     ]
 }
