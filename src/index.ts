@@ -1,4 +1,5 @@
-import TETROMINOS from './tetrominos';
+import { size } from "./components/block/sizeConfig";
+import { Minos } from "./components/Minos";
 import GameManager from './gamemanager';
 
 type Control = {
@@ -51,27 +52,5 @@ if (control.retry !== null) {
     });
 }
 
-// switch (true){
-//     case control.pause !== null:
-//         control.pause?.addEventListener('click', 
-//         () => {
-//             console.log('pause button clicked');
-//         });
-//         break;
-
-//     case control.start !== null:
-//         control.start?.addEventListener('click', 
-//         () => {
-//             console.log('start button clicked');
-//         });
-//         break;
-
-//     case control.retry !== null:
-//         control.retry?.addEventListener('click', 
-//         () => {
-//             console.log('retry button clicked');
-//         });
-//         break;
-// }
 
 window.addEventListener('load', init)
