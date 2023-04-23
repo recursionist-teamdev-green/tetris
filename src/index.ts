@@ -1,39 +1,77 @@
 import TETROMINOS from './tetrominos';
+import GameManager from './gamemanager';
 
-type Size = {box: number, fieldX: number, fieldY: number};
-type Control = {start: HTMLElement | null}
-
-const size: Size = {
-    "box": 20,
-    "fieldX": 10,
-    "fieldY": 20,
+type Control = {
+    start: HTMLElement | null;
+    pause: HTMLElement | null;
+    retry: HTMLElement | null;
 }
 
 const control: Control = {
     "start": document.getElementById("start"),
+    "pause": document.getElementById("pause"),
+    "retry": document.getElementById("retry"),
 }
 
+let gameManager: GameManager;
+let stage: createjs.Stage;
+
 const init = () => {
-    const stage = new createjs.Stage("canvas");
-    const gameField = new createjs.Shape();
-    gameField.graphics.beginStroke("Dark").setStrokeStyle(3,2); 
-    gameField.graphics.rect(0, 0, size.box * size.fieldX, size.box * size.fieldY);
-    stage.addChild(gameField); 
-    
-    const child = new createjs.Shape();
-    child.graphics.beginFill("Dark"); 
-    child.graphics.rect(size.box, size.box, size.box, size.box); 
-    stage.addChild(child)
+    stage = new createjs.Stage("canvas");
+    gameManager = new GameManager(stage);
 
-    // play
-    // control.start?.addEventListener("click", play);
-    // function play(){
-
-    // }
-    console.log(TETROMINOS[0])
-
-    
+    gameManager.init();
     stage.update();
 }
 
-window.addEventListener('load',init)
+createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
+createjs.Ticker.setFPS(1);
+
+createjs.Ticker.addEventListener("tick", () => {
+    gameManager.update();
+    stage.update();
+});
+
+if (control.pause !== null) {
+    control.pause.addEventListener('click', () => {
+        console.log('pause button clicked');
+    });
+}
+
+if (control.start !== null) {
+    control.start.addEventListener('click', () => {
+        // gameManager.Start();
+                console.log('start button clicked');
+    });
+}
+
+if (control.retry !== null) {
+    control.retry.addEventListener('click', () => {
+        console.log('retry button clicked');
+    });
+}
+
+// switch (true){
+//     case control.pause !== null:
+//         control.pause?.addEventListener('click', 
+//         () => {
+//             console.log('pause button clicked');
+//         });
+//         break;
+
+//     case control.start !== null:
+//         control.start?.addEventListener('click', 
+//         () => {
+//             console.log('start button clicked');
+//         });
+//         break;
+
+//     case control.retry !== null:
+//         control.retry?.addEventListener('click', 
+//         () => {
+//             console.log('retry button clicked');
+//         });
+//         break;
+// }
+
+window.addEventListener('load', init)
