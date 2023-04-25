@@ -1,30 +1,41 @@
 import GameField from './gamefield';
+import { Minos } from './components/Minos';
+import { size } from './components/block/sizeConfig';
 
-enum GameState {
-    Gameover = "gameover",
-    Playing = "playing",
-    Paused = "paused",
-    Init = "init",
+type GameState = {
+    Gameover: string,
+    Playing: string,
+    Paused: boolean,
+    Init: string
 }
 
-let child: createjs.Shape;
+const gameState: GameState = {
+    "Gameover" : "gameover",
+    "Playing" : "playing",
+    "Paused" : false,
+    "Init" : "init",
+}
+
+let child: Minos;
 
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
     private gameField: GameField;
-    private gameState: GameState;
+    // private gameState: GameState;
     private gameOver: boolean;
     private score: number;
-    private count: number = 0;
+    private count: number;
+    private currentMino: Minos;
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
-        this.gameField = new GameField(20, 10, 20);
-        this.gameState = GameState.Init;
+        this.gameField = new GameField(size.box, size.fieldX, size.fieldY);
+        // this.gameState = gameState.Init;
         this.gameOver = false;
         this.score = 0;
         this.count = 0;
+        this.currentMino = new Minos();
     }
 
     public init() {
@@ -34,42 +45,70 @@ class GameManager {
         //スコアの初期化
         this.score = 0;
         //gameStateの初期化
-        this.gameState = GameState.Init;
+        // this.gameState = GameState.Init;
         //gameoverフラグの初期化
         this.gameOver = false;
-
-        //Todo tetromino classをnewする形に変更する
-        child = new createjs.Shape();
-        child.graphics.beginFill("Dark");
-        child.graphics.rect(10, 10, 10, 10);
-        this.stage.addChild(child)
+        
     }
 
-    public Start() {
+    public start() {
+        //Todo tetromino classをnewする形に変更する
+        this.stage.addChild(this.currentMino)
+        createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
+        createjs.Ticker.setFPS(1);
+        this.stage.update();
+
+        // ポーズの場合、動かさない
+        document.addEventListener('keydown', e => {
+            if(!gameState.Paused){
+                (this.currentMino as Minos).move(e);
+                this.stage.update();
+            }
+            console.log(gameState.Paused)
+        })
+        createjs.Ticker.addEventListener("tick",()=>{
+            this.update();
+            console.log(this.currentMino.children)
+        });
+
+
         // this.changeGameState(GameState.Playing);
     }
 
     public pause() {
-        this.gameState === GameState.Paused
-            ? this.gameState = GameState.Playing
-            : this.gameState = GameState.Paused;
+        // this.gameState === GameState.Paused
+        //     ? this.gameState = GameState.Playing
+        //     : this.gameState = GameState.Paused;
+        if(createjs.Ticker.paused){
+            console.log("restart")
+            createjs.Ticker.init();
+            createjs.Ticker.addEventListener('tick', ()=>{this.update();});
+            createjs.Ticker.paused = false;
+            gameState.Paused = false;
+        }else{
+            console.log("reset")
+            createjs.Ticker.reset();
+            createjs.Ticker.paused = true;
+            gameState.Paused = true;
+        }
     }
 
     public retry() {
         this.init();
-        this.Start();
+        this.start();
     }
 
     public update() {
-        this.count = this.count + 10;
-        child.y = this.count;
-        console.log(child.y);
-        console.log(child.x);
+        this.currentMino.y += size.box;
+        console.log(this.currentMino.x);
+        console.log(this.currentMino.y);
+        this.stage.update();
 
         // gameStageの底辺にする
-        // if (child.y = 390) {
-        //     this.gameState = GameState.Gameover;
-        // }
+        if (this.currentMino.y >= 380){
+            this.currentMino = new Minos();
+            this.stage.addChild(this.currentMino)
+        }
     }
 
     public gameEnd() {
@@ -77,21 +116,21 @@ class GameManager {
     }
 
 
-    public changeGameState(gameState: GameState) {
-        switch (gameState) {
-            case GameState.Init:
-                this.init();
-                break;
-            case GameState.Playing:
-                this.update();
-                break;
-            case GameState.Gameover:
-                this.gameEnd();
-                break;
-            case GameState.Paused:
-                this.pause();
-        }
-    }
+    // public changeGameState(gameState: GameState) {
+    //     switch (gameState) {
+    //         case gameState.Init:
+    //             this.init();
+    //             break;
+    //         case gameState.Playing:
+    //             this.update();
+    //             break;
+    //         case gameState.Gameover:
+    //             this.gameEnd();
+    //             break;
+    //         case gameState.Paused:
+    //             this.pause();
+    //     }
+    // }
 }
 
 export default GameManager;

@@ -4,6 +4,8 @@ import { size } from "./block/sizeConfig";
 export class Minos extends createjs.Container{
     constructor(){
         super()
+        this.regX = 60
+        this.regY = 60
         const randomNum: number = Math.floor(Math.random() * 7)
         const template = tetrominos[randomNum]
         
@@ -19,13 +21,17 @@ export class Minos extends createjs.Container{
                 }
             }
         }
+        this.x = size.box * 6
+        this.y = size.box * 2
     }
 
-    move(keyDown: KeyboardEvent): void{
+    public move(keyDown: KeyboardEvent): void{
         if(keyDown.code == "ArrowRight") this.x += size.box;
         else if(keyDown.code == "ArrowLeft") this.x -= size.box;
         else if(keyDown.code == "ArrowDown") this.y += size.box;
-        else if(keyDown.code == "ArrowUp") this.y -= size.box;
+        else if(keyDown.code == "ArrowUp") {
+            this.rotation += 90
+        }
     }
 
 }
