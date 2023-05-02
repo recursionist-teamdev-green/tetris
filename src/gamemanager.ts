@@ -16,12 +16,10 @@ const gameState: GameState = {
     "Init" : "init",
 }
 
-let child: Minos;
-
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
-    private gameField: GameField;
+    // private gameField: GameField;
     // private gameState: GameState;
     private gameOver: boolean;
     private score: number;
@@ -30,7 +28,7 @@ class GameManager {
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
-        this.gameField = new GameField(size.box, size.fieldX, size.fieldY);
+        // this.gameField = new GameField(size.box, size.fieldX, size.fieldY);
         // this.gameState = gameState.Init;
         this.gameOver = false;
         this.score = 0;
@@ -40,8 +38,8 @@ class GameManager {
 
     public init() {
         //gameFieldの初期化
-        this.gameField.init();
-        this.stage.addChild(this.gameField);
+        // this.gameField.init();
+        // this.stage.addChild(this.gameField);
         //スコアの初期化
         this.score = 0;
         //gameStateの初期化
@@ -66,9 +64,11 @@ class GameManager {
             }
             console.log(gameState.Paused)
         })
+        
         createjs.Ticker.addEventListener("tick",()=>{
             this.update();
             console.log(this.currentMino.children)
+            console.log(this.stage.children)
         });
 
 
@@ -105,10 +105,14 @@ class GameManager {
         this.stage.update();
 
         // gameStageの底辺にする
-        if (this.currentMino.y >= 380){
+        if (this.currentMino.y >= 570){
             this.currentMino = new Minos();
             this.stage.addChild(this.currentMino)
         }
+    }
+
+    public checkHit() {
+        // point = this.currentMino.localToLocal(0,0,this.stage.children)
     }
 
     public gameEnd() {

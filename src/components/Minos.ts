@@ -26,11 +26,23 @@ export class Minos extends createjs.Container{
     }
 
     public move(keyDown: KeyboardEvent): void{
-        if(keyDown.code == "ArrowRight") this.x += size.box;
-        else if(keyDown.code == "ArrowLeft") this.x -= size.box;
-        else if(keyDown.code == "ArrowDown") this.y += size.box;
-        else if(keyDown.code == "ArrowUp") {
-            this.rotation += 90
+        // if(keyDown.code == "ArrowRight") this.x += size.box;
+        // else if(keyDown.code == "ArrowLeft") this.x -= size.box;
+        // else if(keyDown.code == "ArrowDown") this.y += size.box;
+        // else if(keyDown.code == "ArrowUp") this.rotation += 90
+        switch(keyDown.code){
+            case("ArrowRight"):
+                this.x += size.box;
+                break;
+            case("ArrowLeft"):
+                this.x -= size.box;
+                break;
+            case("ArrowDown"):
+                this.y += size.box;
+                break;
+            case("ArrowUp"):
+                this.rotation += 90;
+                break;
         }
     }
 
