@@ -25,6 +25,7 @@ class GameManager {
     private score: number;
     private count: number;
     private currentMino: Minos;
+    private point: createjs.Shape;
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
@@ -34,6 +35,12 @@ class GameManager {
         this.score = 0;
         this.count = 0;
         this.currentMino = new Minos();
+
+        // test
+        this.point = new createjs.Shape();
+        this.point.graphics.beginFill("dark")
+                        .drawRect(60, 150, 30, 30)
+        this.stage.addChild(this.point)
     }
 
     public init() {
@@ -60,16 +67,17 @@ class GameManager {
         document.addEventListener('keydown', e => {
             if(!gameState.Paused){
                 (this.currentMino as Minos).move(e);
+                this.checkHit();
                 this.stage.update();
             }
-            console.log(gameState.Paused)
         })
         
-        createjs.Ticker.addEventListener("tick",()=>{
-            this.update();
-            console.log(this.currentMino.children)
-            console.log(this.stage.children)
-        });
+        // createjs.Ticker.addEventListener("tick",()=>{
+        //     this.update();
+        //     this.checkHit();
+        //     console.log(this.currentMino.children)
+        //     console.log(this.stage.children)
+        // });
 
 
         // this.changeGameState(GameState.Playing);
@@ -80,13 +88,11 @@ class GameManager {
         //     ? this.gameState = GameState.Playing
         //     : this.gameState = GameState.Paused;
         if(createjs.Ticker.paused){
-            console.log("restart")
             createjs.Ticker.init();
             createjs.Ticker.addEventListener('tick', ()=>{this.update();});
             createjs.Ticker.paused = false;
             gameState.Paused = false;
         }else{
-            console.log("reset")
             createjs.Ticker.reset();
             createjs.Ticker.paused = true;
             gameState.Paused = true;
@@ -100,8 +106,6 @@ class GameManager {
 
     public update() {
         this.currentMino.y += size.box;
-        console.log(this.currentMino.x);
-        console.log(this.currentMino.y);
         this.stage.update();
 
         // gameStageの底辺にする
@@ -112,13 +116,22 @@ class GameManager {
     }
 
     public checkHit() {
-        // point = this.currentMino.localToLocal(0,0,this.stage.children)
+        for(let i = 0; i < 4; i++){
+            let ele = this.currentMino.getChildAt(i);
+            console.log(ele)
+            let hitPoint = ele.localToLocal(0,0,this.point);
+            let isHit = this.point.hitTest(hitPoint.x, hitPoint.y)
+            if(isHit){
+                console.log("Hit!!!!!!!!!!!")
+            }else console.log("No Hit")
+        }
     }
 
     public gameEnd() {
 
     }
 
+    
 
     // public changeGameState(gameState: GameState) {
     //     switch (gameState) {

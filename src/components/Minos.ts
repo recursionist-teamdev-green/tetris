@@ -2,10 +2,9 @@ import { tetrominos } from "./block/tetrominos";
 import { size } from "./block/sizeConfig";
 
 export class Minos extends createjs.Container{
+    // private point: createjs.Shape;
     constructor(){
         super()
-        this.regX = 60
-        this.regY = 60
         const randomNum: number = Math.floor(Math.random() * 7)
         const template = tetrominos[randomNum]
         
@@ -21,15 +20,15 @@ export class Minos extends createjs.Container{
                 }
             }
         }
-        this.x = size.box * 6
-        this.y = size.box * 2
+
+        // // test
+        // this.point = new createjs.Shape();
+        // this.point.graphics.beginFill("dark")
+        //                 .drawRect(0, 0, 30, 30)
+        // this.addChild(this.point)
     }
 
     public move(keyDown: KeyboardEvent): void{
-        // if(keyDown.code == "ArrowRight") this.x += size.box;
-        // else if(keyDown.code == "ArrowLeft") this.x -= size.box;
-        // else if(keyDown.code == "ArrowDown") this.y += size.box;
-        // else if(keyDown.code == "ArrowUp") this.rotation += 90
         switch(keyDown.code){
             case("ArrowRight"):
                 this.x += size.box;
@@ -41,7 +40,8 @@ export class Minos extends createjs.Container{
                 this.y += size.box;
                 break;
             case("ArrowUp"):
-                this.rotation += 90;
+                this.y -= size.box;
+                // this.rotation += 90;
                 break;
         }
     }
