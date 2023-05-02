@@ -39,7 +39,7 @@ class GameManager {
         // test
         this.point = new createjs.Shape();
         this.point.graphics.beginFill("dark")
-                        .drawRect(60, 150, 30, 30)
+                        .drawRect(60, 150, size.box, size.box)
         this.stage.addChild(this.point)
     }
 
