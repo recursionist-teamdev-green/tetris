@@ -26,10 +26,9 @@ class GameManager {
         this.count = 0;
         this.gameField = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
-        this.test();
-
+        
     }
-
+    
     public test(){
         const point = new createjs.Shape();
         point.graphics.beginFill("dark").drawRect(0, 0, size.box, size.box)
@@ -37,10 +36,9 @@ class GameManager {
         point.y = 150
         this.stage.addChild(point)
         this.gameField.setState(point.x / size.box, point.y / size.box);
-        console.log(this.gameField.getState())
     }
-
-
+    
+    
     public init() {
         //gameFieldの初期化
         this.gameField.init();
@@ -50,16 +48,18 @@ class GameManager {
         // this.gameState = GameState.Init;
         //gameoverフラグの初期化
         this.gameState.Gameover = false;
-        
     }
-
+    
     public start() {
+        // 黒ポチ
+        this.test();
+
         //Todo tetromino classをnewする形に変更する
         this.stage.addChild(this.currentMino)
         createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
         createjs.Ticker.setFPS(1);
         this.stage.update();
-
+        
         console.log(`(${this.currentMino.x}, ${this.currentMino.y})`)
         for(let child of this.currentMino.children){
             console.log(`${child.x}, ${child.y}`)

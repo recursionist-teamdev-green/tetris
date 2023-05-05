@@ -2,7 +2,7 @@ class GameField{
 
     private fieldX: number;
     private fieldY: number;
-    private field: number[][];
+    public field: number[][];
 
     constructor(fieldX: number, fieldY: number) {
         this.fieldX = fieldX;
@@ -28,7 +28,11 @@ class GameField{
 
     public setState(x: number, y: number): void{
         console.log(`set: (${x}, ${y})`)
+        console.log(this.field)
+        console.log(this.field[y][x])
         this.field[y][x] = 1;
+        console.log(this.field[y][x])
+        console.log(this.field)
     }
 }
 
