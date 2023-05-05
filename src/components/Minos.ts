@@ -25,4 +25,12 @@ export class Minos extends createjs.Container{
         this.x = 40
     }
 
+    public getMinosBottom(): number{
+        let resList = []
+        for(let child of this.children){
+            resList.push((this.y + child.y) / size.box)
+        }
+        return Math.max(...resList)
+    }
+
 }

@@ -1,3 +1,6 @@
+import { Minos } from "./components/Minos";
+import { size } from "./components/block/sizeConfig";
+
 class GameField{
 
     private fieldX: number;
@@ -26,13 +29,21 @@ class GameField{
         return this.field;
     }
 
-    public setState(x: number, y: number): void{
-        console.log(`set: (${x}, ${y})`)
-        console.log(this.field)
-        console.log(this.field[y][x])
-        this.field[y][x] = 1;
-        console.log(this.field[y][x])
-        console.log(this.field)
+    public setState(mino: Minos): void;
+    public setState(x: number, y: number): void;
+    public setState(ele1: Minos | number, ele2?: number): void{
+        if(typeof ele1 === "number"){
+            console.log(`set: (${ele1}, ${ele2})`)
+            this.field[(ele2 as number)][ele1] = 1;
+        }else{
+            let x: number = 0;
+            let y: number = 0;
+            for(let child of ele1.children){
+                x = (ele1.x + child.x) / size.box
+                y = (ele1.y + child.y) / size.box
+                this.field[y][x] = 1;
+            }
+        }
     }
 }
 
