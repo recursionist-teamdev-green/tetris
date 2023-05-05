@@ -25,6 +25,11 @@ class GameField{
     public getState(): number[][]{
         return this.field;
     }
+
+    public setState(x: number, y: number): void{
+        console.log(`set: (${x}, ${y})`)
+        this.field[y][x] = 1;
+    }
 }
 
 export default GameField;

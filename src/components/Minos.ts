@@ -15,13 +15,14 @@ export class Minos extends createjs.Container{
             for(let j = 0; j < template.shape[i].length; j++){
                 if(template.shape[i][j]){
                     let box = new createjs.Shape();
-                    let px = j * size.box
-                    let py = i * size.box
-                    box.graphics.beginFill(template.color).rect(px, py, size.box, size.box); 
+                    box.graphics.beginFill(template.color).rect(0, 0, size.box, size.box); 
+                    box.x = j * size.box
+                    box.y = i * size.box
                     this.addChild(box)
                 }
             }
         }
+        this.x = 40
     }
 
 }

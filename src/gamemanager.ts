@@ -15,7 +15,6 @@ class GameManager {
     private score: number;
     private count: number;
     private currentMino: Minos;
-    private point: createjs.Shape;
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
@@ -27,18 +26,24 @@ class GameManager {
         this.count = 0;
         this.gameField = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
+        this.test();
 
-        // test
-        this.point = new createjs.Shape();
-        this.point.graphics.beginFill("dark")
-                        .drawRect(60, 150, size.box, size.box)
-        this.stage.addChild(this.point)
     }
+
+    public test(){
+        const point = new createjs.Shape();
+        point.graphics.beginFill("dark").drawRect(0, 0, size.box, size.box)
+        point.x = 60;
+        point.y = 150
+        this.stage.addChild(point)
+        this.gameField.setState(point.x / size.box, point.y / size.box);
+        console.log(this.gameField.getState())
+    }
+
 
     public init() {
         //gameFieldの初期化
-        // this.gameField.init();
-        // this.stage.addChild(this.gameField);
+        this.gameField.init();
         //スコアの初期化
         this.score = 0;
         //gameStateの初期化
@@ -55,6 +60,9 @@ class GameManager {
         createjs.Ticker.setFPS(1);
         this.stage.update();
 
+        console.log(this.currentMino)
+        console.log(this.currentMino.children)
+
         // ポーズの場合、動かさない
         document.addEventListener('keydown', e => {
             if(!this.gameState.Paused){
@@ -66,26 +74,27 @@ class GameManager {
                         this.movePiece(-1,0);
                         break;
                     case("ArrowDown"):
-                        this.movePiece(0,-1);
+                        this.movePiece(0,1);
                         break;
                     case("ArrowUp"):
-                        this.movePiece(0,1);
+                        this.movePiece(0,-1);
                         // this.rotation += 90;
                         break;
                 }
                 this.stage.update();
             }
+            console.log(this.checkCollision())
         })
           
         // テトリミノが底に着いたら、テトリミノを盤面に配置する
-        if (isGameOver()) {
-            gameOver();
-        } else if (isPieceBottomedOut()) {
-            placePiece();
-        }
+        // if (isGameOver()) {
+        //     gameOver();
+        // } else if (isPieceBottomedOut()) {
+        //     placePiece();
+        // }
         
-        // 盤面から行を消去する
-        clearRows();
+        // // 盤面から行を消去する
+        // clearRows();
         
         // 新しいテトリミノを生成する
         if (this.currentMino === null) {
@@ -138,37 +147,37 @@ class GameManager {
         this.currentMino.x += dx * size.box;
         this.currentMino.y += dy * size.box;
 
-        // 移動後のテトリミノの座標において、他のテトリミノや壁との衝突判定を行う
-        if (this.checkCollision()) {
-            // 衝突した場合、座標を元に戻す
-            this.currentMino.x -= dx * size.box;
-            this.currentMino.y -= dy * size.box;
+        // // 移動後のテトリミノの座標において、他のテトリミノや壁との衝突判定を行う
+        // if (this.checkCollision()) {
+        //     // 衝突した場合、座標を元に戻す
+        //     this.currentMino.x -= dx * size.box;
+        //     this.currentMino.y -= dy * size.box;
 
-            // テトリミノが一番上に到達した場合は、ゲームオーバー
-            if (dy === 1) {
-            this.gameState.Gameover = true;
-            }
+        //     // テトリミノが一番上に到達した場合は、ゲームオーバー
+        //     if (dy === 1) {
+        //     this.gameState.Gameover = true;
+        //     }
 
-            // 一列揃った行がある場合は、その行を消してスコアを加算する
-            // clearRows(grid);
-        }
+        //     // 一列揃った行がある場合は、その行を消してスコアを加算する
+        //     // clearRows(grid);
+        // }
     }
 
     public checkCollision(){
-        for(let i = 0; i < this.currentMino.children.length; i++){
-            let child = this.currentMino.children[i];
-
+        for(let child of this.currentMino.children){
             // fieldの座標へ変換
-            let x = (child.x - this.currentMino.x) / size.box;
-            let y = (child.y - this.currentMino.y) / size.box;
+            let x = (this.currentMino.x - child.x) / size.box;
+            let y = (this.currentMino.y - child.y) / size.box;
+
+            console.log(`(${x}, ${y})`)
 
             // field内に収まってない場合
-            if(x < 0 || x >= size.box * size.fieldX || y < 0 || size.box * size.fieldY){
+            if(x < 0 || x >= size.fieldX || y < 0 || y >= size.fieldY){
                 return true;
             }
 
             // 衝突する場合
-            if(this.gameField.getState()[y][x] !== null){
+            if(this.gameField.getState()[y][x] !== 0){
                 return true;
             }
         }
