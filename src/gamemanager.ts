@@ -60,29 +60,32 @@ class GameManager {
         createjs.Ticker.setFPS(1);
         this.stage.update();
 
-        console.log(this.currentMino)
-        console.log(this.currentMino.children)
-
+        console.log(`(${this.currentMino.x}, ${this.currentMino.y})`)
+        for(let child of this.currentMino.children){
+            console.log(`${child.x}, ${child.y}`)
+        }
+        
         // ポーズの場合、動かさない
         document.addEventListener('keydown', e => {
             if(!this.gameState.Paused){
                 switch(e.code){
                     case("ArrowRight"):
-                        this.movePiece(1,0);
-                        break;
+                    this.movePiece(1,0);
+                    break;
                     case("ArrowLeft"):
-                        this.movePiece(-1,0);
-                        break;
+                    this.movePiece(-1,0);
+                    break;
                     case("ArrowDown"):
-                        this.movePiece(0,1);
-                        break;
+                    this.movePiece(0,1);
+                    break;
                     case("ArrowUp"):
-                        this.movePiece(0,-1);
-                        // this.rotation += 90;
-                        break;
+                    this.movePiece(0,-1);
+                    // this.rotation += 90;
+                    break;
                 }
                 this.stage.update();
             }
+            console.log(`(${this.currentMino.x}, ${this.currentMino.y})`)
             console.log(this.checkCollision())
         })
           
@@ -147,28 +150,30 @@ class GameManager {
         this.currentMino.x += dx * size.box;
         this.currentMino.y += dy * size.box;
 
-        // // 移動後のテトリミノの座標において、他のテトリミノや壁との衝突判定を行う
-        // if (this.checkCollision()) {
-        //     // 衝突した場合、座標を元に戻す
-        //     this.currentMino.x -= dx * size.box;
-        //     this.currentMino.y -= dy * size.box;
+        // 移動後のテトリミノの座標において、他のテトリミノや壁との衝突判定を行う
+        if (this.checkCollision()) {
+            // 衝突した場合、座標を元に戻す
+            this.currentMino.x -= dx * size.box;
+            this.currentMino.y -= dy * size.box;
 
-        //     // テトリミノが一番上に到達した場合は、ゲームオーバー
-        //     if (dy === 1) {
-        //     this.gameState.Gameover = true;
-        //     }
+            // テトリミノが一番上に到達した場合は、ゲームオーバー
+            if (dy === 1) {
+            this.gameState.Gameover = true;
+            }
 
-        //     // 一列揃った行がある場合は、その行を消してスコアを加算する
-        //     // clearRows(grid);
-        // }
+            // 一列揃った行がある場合は、その行を消してスコアを加算する
+            // clearRows(grid);
+        }
     }
 
     public checkCollision(){
+        let x: number = 0;
+        let y: number = 0;
         for(let child of this.currentMino.children){
             // fieldの座標へ変換
-            let x = (this.currentMino.x - child.x) / size.box;
-            let y = (this.currentMino.y - child.y) / size.box;
-
+            x = child.x === 0 ? this.currentMino.x / size.box : (this.currentMino.x + child.x) / size.box
+            y = child.y === 0 ? this.currentMino.y / size.box : (this.currentMino.y + child.y) / size.box
+            
             console.log(`(${x}, ${y})`)
 
             // field内に収まってない場合
