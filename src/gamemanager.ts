@@ -3,25 +3,15 @@ import { Minos } from './components/Minos';
 import { size } from './components/block/sizeConfig';
 
 type GameState = {
-    Gameover: string,
-    Playing: string,
+    Gameover: boolean,
     Paused: boolean,
-    Init: string
-}
-
-const gameState: GameState = {
-    "Gameover" : "gameover",
-    "Playing" : "playing",
-    "Paused" : false,
-    "Init" : "init",
 }
 
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
-    // private gameField: GameField;
-    // private gameState: GameState;
-    private gameOver: boolean;
+    private gameField: GameField;
+    private gameState: GameState;
     private score: number;
     private count: number;
     private currentMino: Minos;
@@ -29,11 +19,13 @@ class GameManager {
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
-        // this.gameField = new GameField(size.box, size.fieldX, size.fieldY);
-        // this.gameState = gameState.Init;
-        this.gameOver = false;
+        this.gameState = {
+            "Gameover" : false,
+            "Paused" : false,
+        };
         this.score = 0;
         this.count = 0;
+        this.gameField = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
 
         // test
@@ -52,7 +44,7 @@ class GameManager {
         //gameStateの初期化
         // this.gameState = GameState.Init;
         //gameoverフラグの初期化
-        this.gameOver = false;
+        this.gameState.Gameover = false;
         
     }
 
@@ -65,13 +57,42 @@ class GameManager {
 
         // ポーズの場合、動かさない
         document.addEventListener('keydown', e => {
-            if(!gameState.Paused){
-                (this.currentMino as Minos).move(e);
-                this.checkHit();
+            if(!this.gameState.Paused){
+                switch(e.code){
+                    case("ArrowRight"):
+                        this.movePiece(1,0);
+                        break;
+                    case("ArrowLeft"):
+                        this.movePiece(-1,0);
+                        break;
+                    case("ArrowDown"):
+                        this.movePiece(0,-1);
+                        break;
+                    case("ArrowUp"):
+                        this.movePiece(0,1);
+                        // this.rotation += 90;
+                        break;
+                }
                 this.stage.update();
             }
         })
+          
+        // テトリミノが底に着いたら、テトリミノを盤面に配置する
+        if (isGameOver()) {
+            gameOver();
+        } else if (isPieceBottomedOut()) {
+            placePiece();
+        }
         
+        // 盤面から行を消去する
+        clearRows();
+        
+        // 新しいテトリミノを生成する
+        if (this.currentMino === null) {
+            this.currentMino = new Minos();
+        }
+          
+
         // createjs.Ticker.addEventListener("tick",()=>{
         //     this.update();
         //     this.checkHit();
@@ -84,18 +105,15 @@ class GameManager {
     }
 
     public pause() {
-        // this.gameState === GameState.Paused
-        //     ? this.gameState = GameState.Playing
-        //     : this.gameState = GameState.Paused;
         if(createjs.Ticker.paused){
             createjs.Ticker.init();
             createjs.Ticker.addEventListener('tick', ()=>{this.update();});
             createjs.Ticker.paused = false;
-            gameState.Paused = false;
+            this.gameState.Paused = false;
         }else{
             createjs.Ticker.reset();
             createjs.Ticker.paused = true;
-            gameState.Paused = true;
+            this.gameState.Paused = true;
         }
     }
 
@@ -115,17 +133,49 @@ class GameManager {
         }
     }
 
-    public checkHit() {
-        for(let i = 0; i < 4; i++){
-            let ele = this.currentMino.getChildAt(i);
-            console.log(ele)
-            let hitPoint = ele.localToLocal(0,0,this.point);
-            let isHit = this.point.hitTest(hitPoint.x, hitPoint.y)
-            if(isHit){
-                console.log("Hit!!!!!!!!!!!")
-            }else console.log("No Hit")
+    public movePiece(dx: number, dy: number){
+        // テトリミノの座標を変更する
+        this.currentMino.x += dx * size.box;
+        this.currentMino.y += dy * size.box;
+
+        // 移動後のテトリミノの座標において、他のテトリミノや壁との衝突判定を行う
+        if (this.checkCollision()) {
+            // 衝突した場合、座標を元に戻す
+            this.currentMino.x -= dx * size.box;
+            this.currentMino.y -= dy * size.box;
+
+            // テトリミノが一番上に到達した場合は、ゲームオーバー
+            if (dy === 1) {
+            this.gameState.Gameover = true;
+            }
+
+            // 一列揃った行がある場合は、その行を消してスコアを加算する
+            // clearRows(grid);
         }
     }
+
+    public checkCollision(){
+        for(let i = 0; i < this.currentMino.children.length; i++){
+            let child = this.currentMino.children[i];
+
+            // fieldの座標へ変換
+            let x = (child.x - this.currentMino.x) / size.box;
+            let y = (child.y - this.currentMino.y) / size.box;
+
+            // field内に収まってない場合
+            if(x < 0 || x >= size.box * size.fieldX || y < 0 || size.box * size.fieldY){
+                return true;
+            }
+
+            // 衝突する場合
+            if(this.gameField.getState()[y][x] !== null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public gameEnd() {
 

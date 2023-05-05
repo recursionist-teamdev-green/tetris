@@ -1,28 +1,29 @@
-class GameField extends createjs.Shape {
+class GameField{
 
-    // private box: number;
     private fieldX: number;
     private fieldY: number;
     private field: number[][];
 
-    constructor(box: number, fieldX: number, fieldY: number) {
-        super();
-        // this.box = box;
+    constructor(fieldX: number, fieldY: number) {
         this.fieldX = fieldX;
         this.fieldY = fieldY;
-        
         this.field = [];
+
+        this.init();
+    }
+
+    public init() {
+        //GameFieldを空にする処理を記述する
         for(let y = 0; y < this.fieldY; y++){
             this.field[y] = []
             for(let x = 0; x < this.fieldX; x++){
                 this.field[y][x] = 0;
             }
         }
-        
     }
-
-    public init() {
-        //GameFieldを空にする処理を記述する
+    
+    public getState(): number[][]{
+        return this.field;
     }
 }
 
