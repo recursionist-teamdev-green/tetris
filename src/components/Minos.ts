@@ -1,16 +1,26 @@
 import { tetrominos } from "./block/tetrominos";
 import { size } from "./block/sizeConfig";
 
+type Template = {
+    "shape": number[][],
+    "color": string,
+    "type": number,
+}
+
 export class Minos extends createjs.Container {
-    private color: string
-    private randomNum: number
-    private shape: number[][]
-    
+    private randomNum: number;
+    private template: Template;
+    private color: string;
+    private shape: number[][];
+    private type: number
+
     constructor() {
         super();
         this.randomNum = Math.floor(Math.random() * 7);
-        this.color = tetrominos[this.randomNum].color
-        this.shape = tetrominos[this.randomNum].shape
+        this.template = tetrominos[this.randomNum]
+        this.color = this.template.color;
+        this.shape = this.template.shape;
+        this.type = this.template.type
         this.createMino();
     }
 
@@ -39,5 +49,13 @@ export class Minos extends createjs.Container {
             resList.push((this.y + child.y) / size.box);
         }
         return Math.max(...resList);
+    }
+
+    public getType(): number{
+        return this.type
+    }
+
+    public getColor(): string {
+        return this.color;
     }
 }

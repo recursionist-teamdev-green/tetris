@@ -102,14 +102,18 @@ class GameManager {
         if (this.currentMino.getMinosBottom() >= size.fieldY - 1 || isBottom) {
             // gameFieldにFix
             this.field.setState(this.currentMino);
+            this.clearCurrentMino();
 
-            // Fix後、次のminoを生成
+            // fieldの状態を描画
+            this.field.drawField(this.stage)
+
+            // 次のminoを生成
             this.currentMino = new Minos();
             this.stage.addChild(this.currentMino);
             this.stage.update();
         }
-
-        console.log(this.field.checkRows())
+        console.log(this.field.getState())
+        console.log(this.field.getColorDict())
     }
 
     public movePiece(dx: number, dy: number): boolean {
@@ -136,8 +140,6 @@ class GameManager {
         let x: number = 0;
         let y: number = 0;
 
-        console.log(`((${this.currentMino.x}, ${this.currentMino.y}))`);
-
         for (let child of this.currentMino.children) {
             // fieldの座標へ変換
             x =
@@ -148,8 +150,6 @@ class GameManager {
                 child.y === 0
                     ? this.currentMino.y / size.box
                     : (this.currentMino.y + child.y) / size.box;
-
-            console.log(`(${x}, ${y})`);
 
             // field内に収まってない場合
             if (x < 0 || x >= size.fieldX || y < 0 || y >= size.fieldY) {
@@ -181,13 +181,9 @@ class GameManager {
         return false;
     }
 
-    public clear(): void{
+    public clearCurrentMino(): void{
         this.stage.removeChild(this.currentMino)
-        // Fix後、次のminoを生成
-        this.currentMino = new Minos();
-        this.stage.addChild(this.currentMino);
         this.stage.update();
-        
     }
 
     public gameEnd() {}
