@@ -30,7 +30,7 @@ class GameManager {
     }
     
     // 黒ぽち
-    public test(){
+    public test(): void{
         const point = new createjs.Shape();
         point.graphics.beginFill("dark").drawRect(0, 0, size.box, size.box)
         point.x = 60;
@@ -40,7 +40,7 @@ class GameManager {
     }
     
     
-    public init() {
+    public init(): void{
         //gameFieldの初期化
         this.gameField.init();
         //スコアの初期化
@@ -51,7 +51,7 @@ class GameManager {
         this.gameState.Gameover = false;
     }
     
-    public start() {
+    public start(): void{
         // 黒ぽち
         this.test();
 
@@ -95,7 +95,7 @@ class GameManager {
         // this.changeGameState(GameState.Playing);
     }
 
-    public pause() {
+    public pause(): void{
         if(createjs.Ticker.paused){
             createjs.Ticker.init();
             createjs.Ticker.addEventListener('tick', ()=>{this.update();});
@@ -108,12 +108,12 @@ class GameManager {
         }
     }
 
-    public retry() {
+    public retry(): void{
         this.init();
         this.start();
     }
 
-    public update() {
+    public update(): void{
         // gameStageの底辺にする
         if(this.currentMino.getMinosBottom() >= size.fieldY - 1){
             // gameFieldにFix
@@ -124,26 +124,41 @@ class GameManager {
             this.stage.addChild(this.currentMino)
             this.stage.update();
         }
-
+        
         this.movePiece(0,1);
         console.log(this.currentMino.getMinosBottom())
         this.stage.update();
     }
-
-    public movePiece(dx: number, dy: number){
+    
+    public movePiece(dx: number, dy: number): void{
         // テトリミノの座標を変更する
         this.currentMino.x += dx * size.box;
         this.currentMino.y += dy * size.box;
-
-        // 移動後のテトリミノの座標において、他のテトリミノや壁との衝突判定を行う
-        if (this.checkCollision()) {
+        
+        // 移動後のテトリミノの座標において、壁との衝突判定
+        if(this.checkWallCollision()) {
             // 衝突した場合、座標を元に戻す
             this.currentMino.x -= dx * size.box;
             this.currentMino.y -= dy * size.box;
+
+            // 他のテトリミノとの衝突判定
+        } else if(this.checkBottomCollision()){
+            // 衝突した場合、座標を元に戻す
+            this.currentMino.x -= dx * size.box;
+            this.currentMino.y -= dy * size.box;
+            
+            // テトリミノをFix
+            this.gameField.setState(this.currentMino);
+        
+            // 次のminoを生成
+            this.currentMino = new Minos();
+            this.stage.addChild(this.currentMino)
+            this.stage.update();
+
         }
     }
     
-    public checkCollision(): boolean{
+    public checkWallCollision(): boolean{
         let x: number = 0;
         let y: number = 0;
         for(let child of this.currentMino.children){
@@ -157,14 +172,27 @@ class GameManager {
             if(x < 0 || x >= size.fieldX || y < 0 || y >= size.fieldY){
                 return true;
             }
+        }
+        return false;
+    }
+
+    public checkBottomCollision(): boolean{
+        let x: number = 0;
+        let y: number = 0;
+        for(let child of this.currentMino.children){
+            // fieldの座標へ変換
+            x = child.x === 0 ? this.currentMino.x / size.box : (this.currentMino.x + child.x) / size.box
+            y = child.y === 0 ? this.currentMino.y / size.box : (this.currentMino.y + child.y) / size.box
             
-            // 衝突する場合
+            // テトロミノと衝突する場合
             if(this.gameField.getState()[y][x] !== 0){
                 return true;
             }
         }
         return false;
     }
+
+
 
     public gameEnd() {
 
