@@ -44,6 +44,13 @@ class GameField {
             }
         }
     }
+
+    public checkRows(): number | null{
+        for(let y = 0; y < this.field.length; y++){
+            if(this.field[y].every((value) => value)) return y
+        }
+        return null
+    }
 }
 
 export default GameField;

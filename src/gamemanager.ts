@@ -10,21 +10,21 @@ type GameState = {
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
-    private gameField: GameField;
-    private gameState: GameState;
+    private field: GameField;
+    private state: GameState;
     private score: number;
     private count: number;
     private currentMino: Minos;
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
-        this.gameState = {
+        this.state = {
             Gameover: false,
             Paused: false,
         };
         this.score = 0;
         this.count = 0;
-        this.gameField = new GameField(size.fieldX, size.fieldY);
+        this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
     }
 
@@ -35,18 +35,18 @@ class GameManager {
         point.x = 6 * size.box;
         point.y = 15 * size.box;
         this.stage.addChild(point);
-        this.gameField.setState(point.x / size.box, point.y / size.box);
+        this.field.setState(point.x / size.box, point.y / size.box);
     }
 
     public init(): void {
         //gameFieldの初期化
-        this.gameField.init();
+        this.field.init();
         //スコアの初期化
         this.score = 0;
         //gameStateの初期化
-        // this.gameState = GameState.Init;
+        // this.state = GameState.Init;
         //gameoverフラグの初期化
-        this.gameState.Gameover = false;
+        this.state.Gameover = false;
     }
 
     public start(): void {
@@ -61,7 +61,7 @@ class GameManager {
 
         // ポーズの場合、動かさない
         document.addEventListener("keydown", (e) => {
-            if (!this.gameState.Paused) {
+            if (!this.state.Paused) {
                 switch (e.code) {
                     case "ArrowRight":
                         this.movePiece(1, 0);
@@ -95,11 +95,11 @@ class GameManager {
                 this.update();
             });
             createjs.Ticker.paused = false;
-            this.gameState.Paused = false;
+            this.state.Paused = false;
         } else {
             createjs.Ticker.reset();
             createjs.Ticker.paused = true;
-            this.gameState.Paused = true;
+            this.state.Paused = true;
         }
     }
 
@@ -114,13 +114,15 @@ class GameManager {
         // gameStageの底辺にする
         if (this.currentMino.getMinosBottom() >= size.fieldY - 1 || isBottom) {
             // gameFieldにFix
-            this.gameField.setState(this.currentMino);
+            this.field.setState(this.currentMino);
 
             // Fix後、次のminoを生成
             this.currentMino = new Minos();
             this.stage.addChild(this.currentMino);
             this.stage.update();
         }
+
+        console.log(this.field.checkRows())
     }
 
     public movePiece(dx: number, dy: number): boolean {
@@ -185,7 +187,7 @@ class GameManager {
                     : (this.currentMino.y + child.y) / size.box;
 
             // テトロミノと衝突する場合
-            if (this.gameField.getState()[y][x] !== 0) {
+            if (this.field.getState()[y][x] !== 0) {
                 return true;
             }
         }
@@ -203,18 +205,18 @@ class GameManager {
 
     public gameEnd() {}
 
-    // public changeGameState(gameState: GameState) {
-    //     switch (gameState) {
-    //         case gameState.Init:
+    // public changeGameState(state: GameState) {
+    //     switch (state) {
+    //         case state.Init:
     //             this.init();
     //             break;
-    //         case gameState.Playing:
+    //         case state.Playing:
     //             this.update();
     //             break;
-    //         case gameState.Gameover:
+    //         case state.Gameover:
     //             this.gameEnd();
     //             break;
-    //         case gameState.Paused:
+    //         case state.Paused:
     //             this.pause();
     //     }
     // }
