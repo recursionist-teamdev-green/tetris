@@ -27,18 +27,18 @@ class GameField {
         }
     }
 
-    public getState(): number[][]{
+    public getState(): number[][] {
         return this.field;
     }
 
-    public setState(mino: Minos): void{
+    public setState(mino: Minos): void {
         let x: number = 0;
         let y: number = 0;
         const color = mino.getColor();
         const type = mino.getType();
 
         // dict追加{type: color}
-        if(!this.colorDict.has(type)) this.colorDict.set(type, color)
+        if (!this.colorDict.has(type)) this.colorDict.set(type, color);
 
         // field追加
         for (let child of mino.children) {
@@ -47,11 +47,11 @@ class GameField {
             y = (mino.y + child.y) / size.box;
 
             // 座標にkey追加（描画する際のkey）
-            this.field[y][x] = (type);
+            this.field[y][x] = type;
         }
     }
 
-    public drawField(stage: createjs.Stage): void{
+    public drawField(stage: createjs.Stage): void {
         stage.removeAllChildren();
         for (let y = 0; y < this.field.length; y++) {
             for (let x = 0; x < this.field[y].length; x++) {
@@ -60,7 +60,9 @@ class GameField {
                     box.graphics
                         .beginStroke("dark")
                         .setStrokeStyle(1)
-                        .beginFill((this.colorDict.get(this.field[y][x]) as string))
+                        .beginFill(
+                            this.colorDict.get(this.field[y][x]) as string
+                        )
                         .rect(0, 0, size.box, size.box);
                     box.x = x * size.box;
                     box.y = y * size.box;
@@ -70,22 +72,22 @@ class GameField {
         }
     }
 
-    public getColorDict(): Map<number, string>{
-        return this.colorDict
+    public getColorDict(): Map<number, string> {
+        return this.colorDict;
     }
 
     // 削除する行を配列として返す
     public checkRows(): number[] | null {
-        const clearY = []
+        const clearY = [];
         for (let y = 0; y < this.field.length; y++) {
             if (this.field[y].every((value) => value)) clearY.push(y);
         }
-        return clearY.length == 0 ? null : clearY
+        return clearY.length == 0 ? null : clearY;
     }
 
     // field配列の削除と0埋め配列追加
-    public clearRows(y: number[]): void{
-        for(let ele of y){
+    public clearRows(y: number[]): void {
+        for (let ele of y) {
             const newArray = new Array(this.fieldX).fill(0);
             this.field.splice(ele, 1);
             this.field.unshift(newArray);
