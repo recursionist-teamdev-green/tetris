@@ -28,20 +28,13 @@ class GameField {
         return this.field;
     }
 
-    public setState(mino: Minos): void;
-    public setState(x: number, y: number): void;
-    public setState(ele1: Minos | number, ele2?: number): void {
-        if (typeof ele1 === "number") {
-            console.log(`set: (${ele1}, ${ele2})`);
-            this.field[ele2 as number][ele1] = 1;
-        } else {
-            let x: number = 0;
-            let y: number = 0;
-            for (let child of ele1.children) {
-                x = (ele1.x + child.x) / size.box;
-                y = (ele1.y + child.y) / size.box;
-                this.field[y][x] = 1;
-            }
+    public setState(mino: Minos): void{
+        let x: number = 0;
+        let y: number = 0;
+        for (let child of mino.children) {
+            x = (mino.x + child.x) / size.box;
+            y = (mino.y + child.y) / size.box;
+            this.field[y][x] = 1;
         }
     }
 

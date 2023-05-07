@@ -28,16 +28,6 @@ class GameManager {
         this.currentMino = new Minos();
     }
 
-    // 黒ぽち
-    public test(): void {
-        const point = new createjs.Shape();
-        point.graphics.beginFill("dark").drawRect(0, 0, size.box, size.box);
-        point.x = 6 * size.box;
-        point.y = 15 * size.box;
-        this.stage.addChild(point);
-        this.field.setState(point.x / size.box, point.y / size.box);
-    }
-
     public init(): void {
         //gameFieldの初期化
         this.field.init();
@@ -50,9 +40,6 @@ class GameManager {
     }
 
     public start(): void {
-        // 黒ぽち
-        this.test();
-
         //Todo tetromino classをnewする形に変更する
         this.stage.addChild(this.currentMino);
         createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
