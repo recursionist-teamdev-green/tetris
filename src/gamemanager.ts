@@ -42,8 +42,6 @@ class GameManager {
     public start(): void {
         //Todo tetromino classをnewする形に変更する
         this.stage.addChild(this.currentMino);
-        createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
-        createjs.Ticker.setFPS(1);
         this.stage.update();
 
         // ポーズの場合、動かさない
@@ -67,6 +65,9 @@ class GameManager {
                 this.stage.update();
             }
         });
+
+        createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
+        createjs.Ticker.setFPS(1);
 
         createjs.Ticker.addEventListener("tick", () => {
             this.update();
@@ -104,16 +105,19 @@ class GameManager {
             this.field.setState(this.currentMino);
             this.clearCurrentMino();
 
-            // fieldの状態を描画
-            this.field.drawField(this.stage)
-
-            // 次のminoを生成
-            this.currentMino = new Minos();
-            this.stage.addChild(this.currentMino);
-            this.stage.update();
+            // 次のMino描画
+            this.nextMino();
         }
-        console.log(this.field.getState())
-        console.log(this.field.getColorDict())
+
+        // 行が埋まった場合
+        if (this.field.checkRows()) {
+            // gameFieldを更新
+            this.field.clearRows(this.field.checkRows() as number[]);
+            this.clearCurrentMino();
+
+            // 次のMino描画
+            this.nextMino();
+        }
     }
 
     public movePiece(dx: number, dy: number): boolean {
@@ -181,8 +185,18 @@ class GameManager {
         return false;
     }
 
-    public clearCurrentMino(): void{
-        this.stage.removeChild(this.currentMino)
+    public clearCurrentMino(): void {
+        this.stage.removeChild(this.currentMino);
+        this.stage.update();
+    }
+
+    public nextMino(): void {
+        // fieldの状態を描画
+        this.field.drawField(this.stage);
+
+        // 次のminoを生成
+        this.currentMino = new Minos();
+        this.stage.addChild(this.currentMino);
         this.stage.update();
     }
 

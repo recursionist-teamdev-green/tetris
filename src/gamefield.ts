@@ -51,7 +51,8 @@ class GameField {
         }
     }
 
-    public drawField(stage: createjs.Stage) {
+    public drawField(stage: createjs.Stage): void{
+        stage.removeAllChildren();
         for (let y = 0; y < this.field.length; y++) {
             for (let x = 0; x < this.field[y].length; x++) {
                 if (this.field[y][x]) {
@@ -69,15 +70,26 @@ class GameField {
         }
     }
 
-    public getColorDict(){
+    public getColorDict(): Map<number, string>{
         return this.colorDict
     }
 
-    public checkRows(): number | null {
+    // 削除する行を配列として返す
+    public checkRows(): number[] | null {
+        const clearY = []
         for (let y = 0; y < this.field.length; y++) {
-            if (this.field[y].every((value) => value)) return y;
+            if (this.field[y].every((value) => value)) clearY.push(y);
         }
-        return null;
+        return clearY.length == 0 ? null : clearY
+    }
+
+    // field配列の削除と0埋め配列追加
+    public clearRows(y: number[]): void{
+        for(let ele of y){
+            const newArray = new Array(this.fieldX).fill(0);
+            this.field.splice(ele, 1);
+            this.field.unshift(newArray);
+        }
     }
 }
 
