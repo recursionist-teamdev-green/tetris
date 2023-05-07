@@ -1,6 +1,5 @@
 import { Minos } from "./components/Minos";
 import { size } from "./components/block/sizeConfig";
-import { tetrominos } from "./components/block/tetrominos";
 
 class GameField {
     private fieldX: number;
@@ -36,11 +35,19 @@ class GameField {
         let x: number = 0;
         let y: number = 0;
         const color = mino.getColor();
-        if(!this.colorDict.has(mino.getType())) this.colorDict.set(mino.getType(), mino.getColor())
+        const type = mino.getType();
+
+        // dict追加{type: color}
+        if(!this.colorDict.has(type)) this.colorDict.set(type, color)
+
+        // field追加
         for (let child of mino.children) {
+            // 座標変換
             x = (mino.x + child.x) / size.box;
             y = (mino.y + child.y) / size.box;
-            this.field[y][x] = (mino.getType());
+
+            // 座標にkey追加（描画する際のkey）
+            this.field[y][x] = (type);
         }
     }
 
@@ -48,7 +55,6 @@ class GameField {
         for (let y = 0; y < this.field.length; y++) {
             for (let x = 0; x < this.field[y].length; x++) {
                 if (this.field[y][x]) {
-                    console.log(x)
                     let box = new createjs.Shape();
                     box.graphics
                         .beginStroke("dark")
