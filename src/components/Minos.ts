@@ -1,37 +1,61 @@
 import { tetrominos } from "./block/tetrominos";
 import { size } from "./block/sizeConfig";
 
-export class Minos extends createjs.Container{
-    constructor(){
-        super()
-        this.regX = 60
-        this.regY = 60
-        const randomNum: number = Math.floor(Math.random() * 7)
-        const template = tetrominos[randomNum]
-        
-        for(let i = 0; i < template.shape.length; i++){
-            for(let j = 0; j < template.shape[i].length; j++){
-                if(template.shape[i][j]){
+type Template = {
+    shape: number[][];
+    color: string;
+    type: number;
+};
+
+export class Minos extends createjs.Container {
+    private randomNum: number;
+    private template: Template;
+    private color: string;
+    private shape: number[][];
+    private type: number;
+
+    constructor() {
+        super();
+        this.randomNum = Math.floor(Math.random() * 7);
+        this.template = tetrominos[this.randomNum];
+        this.color = this.template.color;
+        this.shape = this.template.shape;
+        this.type = this.template.type;
+        this.createMino();
+    }
+
+    public createMino() {
+        for (let i = 0; i < this.shape.length; i++) {
+            for (let j = 0; j < this.shape[i].length; j++) {
+                if (this.shape[i][j]) {
                     let box = new createjs.Shape();
-                    let px = j * size.box
-                    let py = i * size.box
-                    box.graphics.beginFill(template.color); 
-                    box.graphics.rect(px, py, size.box, size.box); 
-                    this.addChild(box)
+                    box.graphics
+                        .beginStroke("dark")
+                        .setStrokeStyle(1)
+                        .beginFill(this.color)
+                        .rect(0, 0, size.box, size.box);
+                    box.x = j * size.box;
+                    box.y = i * size.box;
+                    this.addChild(box);
                 }
             }
         }
-        this.x = size.box * 6
-        this.y = size.box * 2
+        this.x = 4 * size.box;
     }
 
-    public move(keyDown: KeyboardEvent): void{
-        if(keyDown.code == "ArrowRight") this.x += size.box;
-        else if(keyDown.code == "ArrowLeft") this.x -= size.box;
-        else if(keyDown.code == "ArrowDown") this.y += size.box;
-        else if(keyDown.code == "ArrowUp") {
-            this.rotation += 90
+    public getMinosBottom(): number {
+        let resList = [];
+        for (let child of this.children) {
+            resList.push((this.y + child.y) / size.box);
         }
+        return Math.max(...resList);
     }
 
+    public getType(): number {
+        return this.type;
+    }
+
+    public getColor(): string {
+        return this.color;
+    }
 }
