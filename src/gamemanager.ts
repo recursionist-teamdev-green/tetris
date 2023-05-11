@@ -10,10 +10,10 @@ type GameState = {
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
+    private scoreEle: createjs.Text;
     private field: GameField;
     private state: GameState;
     private score: number;
-    private count: number;
     private currentMino: Minos;
 
     constructor(stage: createjs.Stage) {
@@ -23,7 +23,7 @@ class GameManager {
             Paused: false,
         };
         this.score = 0;
-        this.count = 0;
+        this.scoreEle = new createjs.Text("Score: ", "24px serif", "DarkRed");
         this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
     }
@@ -42,6 +42,7 @@ class GameManager {
     public start(): void {
         //Todo tetromino classをnewする形に変更する
         this.stage.addChild(this.currentMino);
+        this.drawScore();
         this.stage.update();
 
         // ポーズの場合、動かさない
@@ -99,6 +100,7 @@ class GameManager {
     public update(): void {
         let isBottom: boolean = this.movePiece(0, 1);
         this.stage.update();
+
         // gameStageの底辺にする
         if (this.currentMino.getMinosBottom() >= size.fieldY - 1 || isBottom) {
             // gameFieldにFix
@@ -112,9 +114,11 @@ class GameManager {
         // 行が埋まった場合
         if (this.field.checkRows()) {
             // gameFieldを更新
-            this.field.clearRows(this.field.checkRows() as number[]);
+            const clearList = this.field.checkRows();
+            this.score += (clearList as number[]).length * 10;
+            this.field.clearRows(clearList as number[]);
             this.clearCurrentMino();
-
+            
             // 次のMino描画
             this.nextMino();
         }
@@ -194,10 +198,18 @@ class GameManager {
         // fieldの状態を描画
         this.field.drawField(this.stage);
 
+        // score描画
+        this.drawScore();
+
         // 次のminoを生成
         this.currentMino = new Minos();
         this.stage.addChild(this.currentMino);
         this.stage.update();
+    }
+
+    public drawScore(): void{
+        this.scoreEle.text = `Score: ${this.score}`;
+        this.stage.addChild(this.scoreEle);
     }
 
     public gameEnd() {}

@@ -6,6 +6,7 @@ type Control = {
     pause: HTMLElement | null;
     retry: HTMLElement | null;
     canvas: HTMLElement | null;
+    score: HTMLElement | null;
 };
 
 const control: Control = {
@@ -13,6 +14,7 @@ const control: Control = {
     pause: document.getElementById("pause"),
     retry: document.getElementById("retry"),
     canvas: document.getElementById("canvas"),
+    score: document.getElementById("score"),
 };
 
 let gameManager: GameManager;
