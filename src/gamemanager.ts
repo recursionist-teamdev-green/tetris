@@ -59,8 +59,9 @@ class GameManager {
                         this.movePiece(0, 1);
                         break;
                     case "ArrowUp":
-                        this.movePiece(0, -1);
-                        // this.rotation += 90;
+                        // this.movePiece(0, -1);
+                        this.currentMino.rotate(1);
+                        if(this.checkBottomCollision() || this.checkWallCollision()) this.currentMino.rotate(-1);
                         break;
                 }
                 this.stage.update();

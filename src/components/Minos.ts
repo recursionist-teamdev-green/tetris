@@ -43,6 +43,29 @@ export class Minos extends createjs.Container {
         this.x = 4 * size.box;
     }
 
+    // 子要素を移動
+    public rotate(value: number): void{
+        // valueが正の場合、時計回り
+        if(value > 0){
+            for(let child of this.children){
+                const x = child.x / size.box
+                const y = child.y / size.box
+                
+                child.x = (3 - y - 1) * size.box;
+                child.y = x * size.box;
+            }
+        // valueが負の場合、反時計回り
+        }else{
+            for(let child of this.children){
+                const x = child.x / size.box
+                const y = child.y / size.box
+                
+                child.x = y * size.box;                
+                child.y = (3 - x - 1) * size.box;
+            }
+        }
+    }
+
     public getMinosBottom(): number {
         let resList = [];
         for (let child of this.children) {
