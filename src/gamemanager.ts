@@ -41,17 +41,19 @@ class GameManager {
     public init(): void {
         //gameFieldの初期化
         this.field.init();
+
         //スコアの初期化
         this.score = 0;
+
         //gameStateの初期化
-        // this.state = GameState.Init;
-        //gameoverフラグの初期化
         this.state.Gameover = false;
+        this.state.Paused = false;
+
+        // stageの初期化
         this.stage.removeAllChildren();
         this.stage.removeAllEventListeners();
         document.removeEventListener("keydown", (this.handleEvent as EventListenerOrEventListenerObject));
         createjs.Ticker.reset();
-        createjs.Ticker.paused = true;
     }
 
     public start(): void {
@@ -102,6 +104,7 @@ class GameManager {
             createjs.Ticker.paused = false;
             this.state.Paused = false;
         } else {
+            console.log("pause")
             createjs.Ticker.reset();
             createjs.Ticker.paused = true;
             this.state.Paused = true;
@@ -226,8 +229,9 @@ class GameManager {
     }
 
     public gameEnd(): void{
-        this.pause();
+        this.retry();
         alert(`あなたのスコアは ${this.score} です！`)
+
     }
 
     public checkEnd(): boolean{
