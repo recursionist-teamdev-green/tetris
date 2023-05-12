@@ -118,6 +118,11 @@ class GameManager {
             // 次のMino描画
             this.nextMino();
         }
+
+        // 一番上が１つでも埋まれば終了
+        if(this.checkEnd()){
+            this.gameEnd();
+        }
     }
 
     public movePiece(dx: number, dy: number): boolean {
@@ -205,6 +210,11 @@ class GameManager {
     public gameEnd(): void{
         this.pause();
         alert(`あなたのスコアは ${this.score} です！`)
+    }
+
+    public checkEnd(): boolean{
+        if(this.field.getState()[0].some(value=>value)) return true;
+        return false
     }
 }
 
