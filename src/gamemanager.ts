@@ -10,20 +10,22 @@ type GameState = {
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
+    private scoreStage: createjs.Stage;
     private scoreEle: createjs.Text;
     private field: GameField;
     private state: GameState;
     private score: number;
     private currentMino: Minos;
 
-    constructor(stage: createjs.Stage) {
+    constructor(stage: createjs.Stage, scoreStage: createjs.Stage) {
         this.stage = stage;
+        this.scoreStage = scoreStage;
         this.state = {
             Gameover: false,
             Paused: false,
         };
         this.score = 0;
-        this.scoreEle = new createjs.Text("Score: ", "24px serif", "DarkRed");
+        this.scoreEle = new createjs.Text("", "24px serif", "DarkRed");
         this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
     }
@@ -32,6 +34,7 @@ class GameManager {
         //gameFieldの初期化
         this.field.init();
         //スコアの初期化
+        this.scoreStage.addChild(this.scoreEle)
         this.score = 0;
         //gameStateの初期化
         // this.state = GameState.Init;
@@ -210,7 +213,7 @@ class GameManager {
 
     public drawScore(): void{
         this.scoreEle.text = `Score: ${this.score}`;
-        this.stage.addChild(this.scoreEle);
+        this.scoreStage.update();
     }
 
     public gameEnd() {}
