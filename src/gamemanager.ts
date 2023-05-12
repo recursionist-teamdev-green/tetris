@@ -131,6 +131,8 @@ class GameManager {
             // 衝突した場合、座標を元に戻す
             this.currentMino.x -= dx * size.box;
             this.currentMino.y -= dy * size.box;
+
+        // 移動後のテトロミノの座標において、他のテトロミノとの衝突判定
         } else if (this.checkBottomCollision()) {
             // 衝突した場合、座標を元に戻す
             this.currentMino.x -= dx * size.box;
@@ -200,23 +202,10 @@ class GameManager {
         this.stage.update();
     }
 
-    public gameEnd() {}
-
-    // public changeGameState(state: GameState) {
-    //     switch (state) {
-    //         case state.Init:
-    //             this.init();
-    //             break;
-    //         case state.Playing:
-    //             this.update();
-    //             break;
-    //         case state.Gameover:
-    //             this.gameEnd();
-    //             break;
-    //         case state.Paused:
-    //             this.pause();
-    //     }
-    // }
+    public gameEnd(): void{
+        this.pause();
+        alert(`あなたのスコアは ${this.score} です！`)
+    }
 }
 
 export default GameManager;
