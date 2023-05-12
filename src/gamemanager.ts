@@ -7,6 +7,11 @@ type GameState = {
     Paused: boolean;
 };
 
+type HandleEvent = {
+    handleEvent: Function,
+    manager: GameManager,
+}
+
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
@@ -15,6 +20,7 @@ class GameManager {
     private score: number;
     private count: number;
     private currentMino: Minos;
+    private handleEvent: HandleEvent | EventListenerOrEventListenerObject;
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
@@ -26,6 +32,10 @@ class GameManager {
         this.count = 0;
         this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
+        this.handleEvent = {
+            handleEvent: this.moveCtrl,
+            manager: this,
+        }
     }
 
     public init(): void {
@@ -37,34 +47,21 @@ class GameManager {
         // this.state = GameState.Init;
         //gameoverフラグの初期化
         this.state.Gameover = false;
+        this.stage.removeAllChildren();
+        this.stage.removeAllEventListeners();
+        document.removeEventListener("keydown", (this.handleEvent as EventListenerOrEventListenerObject));
+        createjs.Ticker.reset();
+        createjs.Ticker.paused = true;
     }
 
     public start(): void {
         //Todo tetromino classをnewする形に変更する
+        this.currentMino = new Minos();
         this.stage.addChild(this.currentMino);
         this.stage.update();
 
         // ポーズの場合、動かさない
-        document.addEventListener("keydown", (e) => {
-            if (!this.state.Paused) {
-                switch (e.code) {
-                    case "ArrowRight":
-                        this.movePiece(1, 0);
-                        break;
-                    case "ArrowLeft":
-                        this.movePiece(-1, 0);
-                        break;
-                    case "ArrowDown":
-                        this.movePiece(0, 1);
-                        break;
-                    case "ArrowUp":
-                        this.movePiece(0, -1);
-                        // this.rotation += 90;
-                        break;
-                }
-                this.stage.update();
-            }
-        });
+        document.addEventListener("keydown", (this.handleEvent as EventListenerOrEventListenerObject));
 
         createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
         createjs.Ticker.setFPS(1);
@@ -73,7 +70,27 @@ class GameManager {
             this.update();
         });
 
-        // this.changeGameState(GameState.Playing);
+    }
+
+    public moveCtrl(e: KeyboardEvent){
+        if (!(this as any as HandleEvent).manager.state.Paused) {
+            switch (e.code) {
+                case "ArrowRight":
+                    (this as any as HandleEvent).manager.movePiece(1, 0);
+                    break;
+                case "ArrowLeft":
+                    (this as any as HandleEvent).manager.movePiece(-1, 0);
+                    break;
+                case "ArrowDown":
+                    (this as any as HandleEvent).manager.movePiece(0, 1);
+                    break;
+                case "ArrowUp":
+                    (this as any as HandleEvent).manager.movePiece(0, -1);
+                    // (this as any as HandleEvent).manager.rotation += 90;
+                    break;
+            }
+            (this as any as HandleEvent).manager.stage.update();
+        }
     }
 
     public pause(): void {
@@ -122,6 +139,7 @@ class GameManager {
         // 一番上が１つでも埋まれば終了
         if(this.checkEnd()){
             this.gameEnd();
+            this.retry();
         }
     }
 
