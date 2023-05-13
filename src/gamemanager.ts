@@ -26,45 +26,35 @@ class GameManager {
         this.count = 0;
         this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
+        this.moveCtrl = this.moveCtrl.bind(this)
     }
 
     public init(): void {
         //gameFieldの初期化
         this.field.init();
+
         //スコアの初期化
         this.score = 0;
+
         //gameStateの初期化
-        // this.state = GameState.Init;
-        //gameoverフラグの初期化
         this.state.Gameover = false;
+        this.state.Paused = false;
+
+        // stageの初期化
+        this.stage.removeAllChildren();
+        this.stage.removeAllEventListeners();
+        document.removeEventListener("keydown", this.moveCtrl);
+        createjs.Ticker.reset();
     }
 
     public start(): void {
         //Todo tetromino classをnewする形に変更する
+        this.currentMino = new Minos();
         this.stage.addChild(this.currentMino);
         this.stage.update();
 
         // ポーズの場合、動かさない
-        document.addEventListener("keydown", (e) => {
-            if (!this.state.Paused) {
-                switch (e.code) {
-                    case "ArrowRight":
-                        this.movePiece(1, 0);
-                        break;
-                    case "ArrowLeft":
-                        this.movePiece(-1, 0);
-                        break;
-                    case "ArrowDown":
-                        this.movePiece(0, 1);
-                        break;
-                    case "ArrowUp":
-                        this.movePiece(0, -1);
-                        // this.rotation += 90;
-                        break;
-                }
-                this.stage.update();
-            }
-        });
+        document.addEventListener("keydown", this.moveCtrl);
 
         createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
         createjs.Ticker.setFPS(1);
@@ -73,7 +63,27 @@ class GameManager {
             this.update();
         });
 
-        // this.changeGameState(GameState.Playing);
+    }
+
+    public moveCtrl(e: KeyboardEvent){
+        if (!this.state.Paused) {
+            switch (e.code) {
+                case "ArrowRight":
+                    this.movePiece(1, 0);
+                    break;
+                case "ArrowLeft":
+                    this.movePiece(-1, 0);
+                    break;
+                case "ArrowDown":
+                    this.movePiece(0, 1);
+                    break;
+                case "ArrowUp":
+                    this.movePiece(0, -1);
+                    // this.rotation += 90;
+                    break;
+            }
+            this.stage.update();
+        }
     }
 
     public pause(): void {
@@ -85,6 +95,7 @@ class GameManager {
             createjs.Ticker.paused = false;
             this.state.Paused = false;
         } else {
+            console.log("pause")
             createjs.Ticker.reset();
             createjs.Ticker.paused = true;
             this.state.Paused = true;
@@ -118,6 +129,12 @@ class GameManager {
             // 次のMino描画
             this.nextMino();
         }
+
+        // 一番上が１つでも埋まれば終了
+        if(this.checkEnd()){
+            this.gameEnd();
+            this.retry();
+        }
     }
 
     public movePiece(dx: number, dy: number): boolean {
@@ -131,6 +148,8 @@ class GameManager {
             // 衝突した場合、座標を元に戻す
             this.currentMino.x -= dx * size.box;
             this.currentMino.y -= dy * size.box;
+
+        // 移動後のテトロミノの座標において、他のテトロミノとの衝突判定
         } else if (this.checkBottomCollision()) {
             // 衝突した場合、座標を元に戻す
             this.currentMino.x -= dx * size.box;
@@ -200,23 +219,16 @@ class GameManager {
         this.stage.update();
     }
 
-    public gameEnd() {}
+    public gameEnd(): void{
+        this.retry();
+        alert(`あなたのスコアは ${this.score} です！`)
 
-    // public changeGameState(state: GameState) {
-    //     switch (state) {
-    //         case state.Init:
-    //             this.init();
-    //             break;
-    //         case state.Playing:
-    //             this.update();
-    //             break;
-    //         case state.Gameover:
-    //             this.gameEnd();
-    //             break;
-    //         case state.Paused:
-    //             this.pause();
-    //     }
-    // }
+    }
+
+    public checkEnd(): boolean{
+        if(this.field.getState()[0].some(value=>value)) return true;
+        return false
+    }
 }
 
 export default GameManager;
