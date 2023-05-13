@@ -25,7 +25,7 @@ const init = () => {
     (control.canvas as HTMLCanvasElement).style.border = "2px solid #555";
     (control.canvas as HTMLCanvasElement).width = size.box * size.fieldX;
     (control.canvas as HTMLCanvasElement).height = size.box * size.fieldY;
-    (control.score as HTMLCanvasElement).width = 120;
+    (control.score as HTMLCanvasElement).width = 150;
     (control.score as HTMLCanvasElement).height = 30;
 
     score = new createjs.Stage("score");
