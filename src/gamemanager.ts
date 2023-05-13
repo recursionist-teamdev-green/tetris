@@ -7,11 +7,6 @@ type GameState = {
     Paused: boolean;
 };
 
-type HandleEvent = {
-    handleEvent: Function,
-    manager: GameManager,
-}
-
 //init()、start()、pause()、retry()でゲームの進行を管理する
 class GameManager {
     private stage: createjs.Stage;
@@ -20,7 +15,6 @@ class GameManager {
     private score: number;
     private count: number;
     private currentMino: Minos;
-    private handleEvent: HandleEvent | EventListenerOrEventListenerObject;
 
     constructor(stage: createjs.Stage) {
         this.stage = stage;
@@ -32,10 +26,7 @@ class GameManager {
         this.count = 0;
         this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
-        this.handleEvent = {
-            handleEvent: this.moveCtrl,
-            manager: this,
-        }
+        this.moveCtrl = this.moveCtrl.bind(this)
     }
 
     public init(): void {
@@ -52,7 +43,7 @@ class GameManager {
         // stageの初期化
         this.stage.removeAllChildren();
         this.stage.removeAllEventListeners();
-        document.removeEventListener("keydown", (this.handleEvent as EventListenerOrEventListenerObject));
+        document.removeEventListener("keydown", this.moveCtrl);
         createjs.Ticker.reset();
     }
 
@@ -63,7 +54,7 @@ class GameManager {
         this.stage.update();
 
         // ポーズの場合、動かさない
-        document.addEventListener("keydown", (this.handleEvent as EventListenerOrEventListenerObject));
+        document.addEventListener("keydown", this.moveCtrl);
 
         createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
         createjs.Ticker.setFPS(1);
@@ -75,23 +66,23 @@ class GameManager {
     }
 
     public moveCtrl(e: KeyboardEvent){
-        if (!(this as any as HandleEvent).manager.state.Paused) {
+        if (!this.state.Paused) {
             switch (e.code) {
                 case "ArrowRight":
-                    (this as any as HandleEvent).manager.movePiece(1, 0);
+                    this.movePiece(1, 0);
                     break;
                 case "ArrowLeft":
-                    (this as any as HandleEvent).manager.movePiece(-1, 0);
+                    this.movePiece(-1, 0);
                     break;
                 case "ArrowDown":
-                    (this as any as HandleEvent).manager.movePiece(0, 1);
+                    this.movePiece(0, 1);
                     break;
                 case "ArrowUp":
-                    (this as any as HandleEvent).manager.movePiece(0, -1);
-                    // (this as any as HandleEvent).manager.rotation += 90;
+                    this.movePiece(0, -1);
+                    // this.rotation += 90;
                     break;
             }
-            (this as any as HandleEvent).manager.stage.update();
+            this.stage.update();
         }
     }
 
