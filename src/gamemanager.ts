@@ -12,14 +12,17 @@ class GameManager {
     private stage: createjs.Stage;
     private scoreStage: createjs.Stage;
     private scoreEle: createjs.Text;
+    private nextMinoDisplay: createjs.Stage;
     private field: GameField;
     private state: GameState;
     private score: number;
     private currentMino: Minos;
+    private nextMino: Minos;
 
-    constructor(stage: createjs.Stage, scoreStage: createjs.Stage) {
+    constructor(stage: createjs.Stage, scoreStage: createjs.Stage, nextMinoDisplay: createjs.Stage) {
         this.stage = stage;
         this.scoreStage = scoreStage;
+        this.nextMinoDisplay = nextMinoDisplay;
         this.state = {
             Gameover: false,
             Paused: false,
@@ -29,6 +32,9 @@ class GameManager {
         this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
         this.moveCtrl = this.moveCtrl.bind(this)
+        this.nextMino = this.currentMino;
+        this.nextMinoDisplay.addChild(this.nextMino);
+        this.nextMinoDisplay.update();
     }
 
     public init(): void {
@@ -52,24 +58,24 @@ class GameManager {
 
     public start(): void {
         //Todo tetromino classをnewする形に変更する
-        this.currentMino = new Minos();
-        this.stage.addChild(this.currentMino);
+        // テトロミノ生成 / 描画
+        this.makeNextMino();
+        // スコア描画
         this.drawScore();
         this.stage.update();
 
-        // ポーズの場合、動かさない
+        // キーボード操作
         document.addEventListener("keydown", this.moveCtrl);
 
+        // ティッカー操作
         createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
         createjs.Ticker.setFPS(1);
-
         createjs.Ticker.addEventListener("tick", () => {
             this.update();
         });
-
     }
 
-    public moveCtrl(e: KeyboardEvent){
+    public moveCtrl(e: KeyboardEvent) {
         if (!this.state.Paused) {
             switch (e.code) {
                 case "ArrowRight":
@@ -83,7 +89,7 @@ class GameManager {
                     break;
                 case "ArrowUp":
                     this.currentMino.rotate(1);
-                    if(this.checkBottomCollision() || this.checkWallCollision()) this.currentMino.rotate(-1);
+                    if (this.checkBottomCollision() || this.checkWallCollision()) this.currentMino.rotate(-1);
                     break;
             }
             this.stage.update();
@@ -122,9 +128,8 @@ class GameManager {
             this.clearCurrentMino();
 
             // 次のMino描画
-            this.nextMino();
+            this.drawNextMino();
         }
-
         // 行が埋まった場合
         if (this.field.checkRows()) {
             // gameFieldを更新
@@ -134,11 +139,12 @@ class GameManager {
             this.clearCurrentMino();
             
             // 次のMino描画
-            this.nextMino();
+            this.drawNextMino();
+            console.log("よばれた2");
         }
 
         // 一番上が１つでも埋まれば終了
-        if(this.checkEnd()){
+        if (this.checkEnd()) {
             this.gameEnd();
             this.retry();
         }
@@ -156,7 +162,7 @@ class GameManager {
             this.currentMino.x -= dx * size.box;
             this.currentMino.y -= dy * size.box;
 
-        // 移動後のテトロミノの座標において、他のテトロミノとの衝突判定
+            // 移動後のテトロミノの座標において、他のテトロミノとの衝突判定
         } else if (this.checkBottomCollision()) {
             // 衝突した場合、座標を元に戻す
             this.currentMino.x -= dx * size.box;
@@ -216,35 +222,55 @@ class GameManager {
         this.stage.update();
     }
 
-    public nextMino(): void {
-        // fieldの状態を描画
+    public drawNextMino(): void {
         this.field.drawField(this.stage);
-
         // score描画
         this.drawScore();
-
         // 次のminoを生成
-        this.currentMino = new Minos();
+        this.makeNextMino();
+        // fieldの状態を描画
         this.stage.addChild(this.currentMino);
         this.stage.update();
     }
 
 
-    public drawScore(): void{
+    public drawScore(): void {
         this.scoreEle.text = `Score: ${this.score}`;
         this.scoreStage.update();
     }
 
-    public gameEnd(): void{
+    public gameEnd(): void {
         this.retry();
         alert(`あなたのスコアは ${this.score} です！`)
 
     }
 
-    public checkEnd(): boolean{
-        if(this.field.getState()[0].some(value=>value)) return true;
+    public checkEnd(): boolean {
+        if (this.field.getState()[0].some(value => value)) return true;
         return false
     }
+    public changeCurrentMino(): void {
+
+    }
+
+    public makeNextMino(): void {
+        this.nextMinoDisplay.removeChild(this.nextMino);
+        this.currentMino = this.nextMino;
+        this.currentMino.x = 4 * size.box;
+        this.currentMino.y = 0;
+
+
+        this.nextMino = new Minos();
+        this.nextMino.x = 1 * size.box;
+        this.nextMino.y = 0;
+
+        // ステージ更新
+        this.stage.addChild(this.currentMino);
+        this.nextMinoDisplay.addChild(this.nextMino);
+        this.stage.update();
+        this.nextMinoDisplay.update();
+    }
+
 }
 
 export default GameManager;
