@@ -56,6 +56,8 @@ class GameManager {
         this.stage.removeAllEventListeners();
         document.removeEventListener("keydown", this.moveCtrl);
         createjs.Ticker.reset();
+        this.stage.update();
+        console.log(this.stage.children)
     }
 
     public start(): void {
@@ -135,7 +137,7 @@ class GameManager {
             console.log("よばれた1");
         }
         // 行が埋まった場合
-        else if (this.field.checkRows()) {
+        if (this.field.checkRows()) {
             // gameFieldを更新
             const clearList = this.field.checkRows();
             this.score += (clearList as number[]).length * 10;
@@ -143,7 +145,7 @@ class GameManager {
             this.clearCurrentMino();
             
             // 次のMino描画
-            // this.drawNextMino();
+            this.drawNextMino();
             console.log("よばれた2");
         }
 
