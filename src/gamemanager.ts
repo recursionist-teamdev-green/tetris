@@ -33,8 +33,6 @@ class GameManager {
         this.currentMino = new Minos();
         this.moveCtrl = this.moveCtrl.bind(this)
         this.nextMino = this.currentMino;
-        this.nextMino.x = 1 * size.box;
-        this.nextMino.y = 0;
         this.nextMinoDisplay.addChild(this.nextMino);
         this.nextMinoDisplay.update();
     }
@@ -60,22 +58,21 @@ class GameManager {
 
     public start(): void {
         //Todo tetromino classをnewする形に変更する
-//        this.currentMino = new Minos();
+        // テトロミノ生成 / 描画
         this.makeNextMino();
-        this.stage.addChild(this.currentMino);
+        // スコア描画
         this.drawScore();
         this.stage.update();
 
-        // ポーズの場合、動かさない
+        // キーボード操作
         document.addEventListener("keydown", this.moveCtrl);
 
+        // ティッカー操作
         createjs.Ticker.timingMode = createjs.Ticker.TIMEOUT;
         createjs.Ticker.setFPS(1);
-
         createjs.Ticker.addEventListener("tick", () => {
             this.update();
         });
-
     }
 
     public moveCtrl(e: KeyboardEvent){
@@ -266,7 +263,11 @@ class GameManager {
         this.nextMino = new Minos();
         this.nextMino.x = 1 * size.box;
         this.nextMino.y = 0;
+
+        // ステージ更新
+        this.stage.addChild(this.currentMino);
         this.nextMinoDisplay.addChild(this.nextMino);
+        this.stage.update();
         this.nextMinoDisplay.update();
     }
 
