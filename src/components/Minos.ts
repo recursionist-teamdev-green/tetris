@@ -40,7 +40,8 @@ export class Minos extends createjs.Container {
                 }
             }
         }
-        this.x = 4 * size.box;
+        this.x = 1 * size.box;
+        this.y = 0;
     }
 
     // 子要素を移動

@@ -19,7 +19,7 @@ class GameManager {
     private currentMino: Minos;
     private nextMino: Minos;
 
-    constructor(stage: createjs.Stage, scoreStage: createjs.Stage,nextMinoDisplay: createjs.Stage) {
+    constructor(stage: createjs.Stage, scoreStage: createjs.Stage, nextMinoDisplay: createjs.Stage) {
         this.stage = stage;
         this.scoreStage = scoreStage;
         this.nextMinoDisplay = nextMinoDisplay;
@@ -33,8 +33,6 @@ class GameManager {
         this.currentMino = new Minos();
         this.moveCtrl = this.moveCtrl.bind(this)
         this.nextMino = this.currentMino;
-        this.nextMino.x = 1 * size.box;
-        this.nextMino.y = 0;
         this.nextMinoDisplay.addChild(this.nextMino);
         this.nextMinoDisplay.update();
     }
@@ -59,8 +57,6 @@ class GameManager {
     }
 
     public start(): void {
-        //Todo tetromino classをnewする形に変更する
-//        this.currentMino = new Minos();
         this.stage.addChild(this.currentMino);
         this.drawScore();
         this.makeNextMino();
@@ -78,7 +74,7 @@ class GameManager {
 
     }
 
-    public moveCtrl(e: KeyboardEvent){
+    public moveCtrl(e: KeyboardEvent) {
         if (!this.state.Paused) {
             switch (e.code) {
                 case "ArrowRight":
@@ -92,7 +88,7 @@ class GameManager {
                     break;
                 case "ArrowUp":
                     this.currentMino.rotate(1);
-                    if(this.checkBottomCollision() || this.checkWallCollision()) this.currentMino.rotate(-1);
+                    if (this.checkBottomCollision() || this.checkWallCollision()) this.currentMino.rotate(-1);
                     break;
             }
             this.stage.update();
@@ -132,23 +128,20 @@ class GameManager {
 
             // 次のMino描画
             this.drawNextMino();
-            console.log("よばれた1");
         }
         // 行が埋まった場合
-        else if (this.field.checkRows()) {
+        if (this.field.checkRows()) {
             // gameFieldを更新
             const clearList = this.field.checkRows();
             this.score += (clearList as number[]).length * 10;
             this.field.clearRows(clearList as number[]);
             this.clearCurrentMino();
-            
-            // 次のMino描画
-            // this.drawNextMino();
-            console.log("よばれた2");
+
+            this.drawNextMino();
         }
 
         // 一番上が１つでも埋まれば終了
-        if(this.checkEnd()){
+        if (this.checkEnd()) {
             this.gameEnd();
             this.retry();
         }
@@ -166,7 +159,7 @@ class GameManager {
             this.currentMino.x -= dx * size.box;
             this.currentMino.y -= dy * size.box;
 
-        // 移動後のテトロミノの座標において、他のテトロミノとの衝突判定
+            // 移動後のテトロミノの座標において、他のテトロミノとの衝突判定
         } else if (this.checkBottomCollision()) {
             // 衝突した場合、座標を元に戻す
             this.currentMino.x -= dx * size.box;
@@ -227,45 +220,44 @@ class GameManager {
     }
 
     public drawNextMino(): void {
-        // fieldの状態を描画
         this.field.drawField(this.stage);
-
         // score描画
         this.drawScore();
-
         // 次のminoを生成
         this.makeNextMino();
-
+        // fieldの状態を描画
         this.stage.addChild(this.currentMino);
         this.stage.update();
     }
 
 
-    public drawScore(): void{
+    public drawScore(): void {
         this.scoreEle.text = `Score: ${this.score}`;
         this.scoreStage.update();
     }
 
-    public gameEnd(): void{
+    public gameEnd(): void {
         this.retry();
         alert(`あなたのスコアは ${this.score} です！`)
 
     }
 
-    public checkEnd(): boolean{
-        if(this.field.getState()[0].some(value=>value)) return true;
+    public checkEnd(): boolean {
+        if (this.field.getState()[0].some(value => value)) return true;
         return false
     }
-    public changeCurrentMino() : void{
+    public changeCurrentMino(): void {
 
     }
 
     public makeNextMino(): void {
         this.nextMinoDisplay.removeChild(this.nextMino);
         this.currentMino = this.nextMino;
+        this.currentMino.x = 4 * size.box;
+        this.currentMino.y = 0;
+
+
         this.nextMino = new Minos();
-        this.nextMino.x = 1 * size.box;
-        this.nextMino.y = 0;
         this.nextMinoDisplay.addChild(this.nextMino);
         this.nextMinoDisplay.update();
     }
