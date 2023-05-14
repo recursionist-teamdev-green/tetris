@@ -12,14 +12,17 @@ class GameManager {
     private stage: createjs.Stage;
     private scoreStage: createjs.Stage;
     private scoreEle: createjs.Text;
+    private nextMinoDisplay: createjs.Stage;
     private field: GameField;
     private state: GameState;
     private score: number;
     private currentMino: Minos;
+    private nextMino: Minos;
 
-    constructor(stage: createjs.Stage, scoreStage: createjs.Stage) {
+    constructor(stage: createjs.Stage, scoreStage: createjs.Stage,nextMinoDisplay: createjs.Stage) {
         this.stage = stage;
         this.scoreStage = scoreStage;
+        this.nextMinoDisplay = nextMinoDisplay;
         this.state = {
             Gameover: false,
             Paused: false,
@@ -29,6 +32,11 @@ class GameManager {
         this.field = new GameField(size.fieldX, size.fieldY);
         this.currentMino = new Minos();
         this.moveCtrl = this.moveCtrl.bind(this)
+        this.nextMino = this.currentMino;
+        this.nextMino.x = 1 * size.box;
+        this.nextMino.y = 0;
+        this.nextMinoDisplay.addChild(this.nextMino);
+        this.nextMinoDisplay.update();
     }
 
     public init(): void {
@@ -52,9 +60,10 @@ class GameManager {
 
     public start(): void {
         //Todo tetromino classをnewする形に変更する
-        this.currentMino = new Minos();
+//        this.currentMino = new Minos();
         this.stage.addChild(this.currentMino);
         this.drawScore();
+        this.makeNextMino();
         this.stage.update();
 
         // ポーズの場合、動かさない
@@ -122,11 +131,11 @@ class GameManager {
             this.clearCurrentMino();
 
             // 次のMino描画
-            this.nextMino();
+            this.drawNextMino();
+            console.log("よばれた1");
         }
-
         // 行が埋まった場合
-        if (this.field.checkRows()) {
+        else if (this.field.checkRows()) {
             // gameFieldを更新
             const clearList = this.field.checkRows();
             this.score += (clearList as number[]).length * 10;
@@ -134,7 +143,8 @@ class GameManager {
             this.clearCurrentMino();
             
             // 次のMino描画
-            this.nextMino();
+            // this.drawNextMino();
+            console.log("よばれた2");
         }
 
         // 一番上が１つでも埋まれば終了
@@ -216,7 +226,7 @@ class GameManager {
         this.stage.update();
     }
 
-    public nextMino(): void {
+    public drawNextMino(): void {
         // fieldの状態を描画
         this.field.drawField(this.stage);
 
@@ -224,7 +234,8 @@ class GameManager {
         this.drawScore();
 
         // 次のminoを生成
-        this.currentMino = new Minos();
+        this.makeNextMino();
+
         this.stage.addChild(this.currentMino);
         this.stage.update();
     }
@@ -245,6 +256,20 @@ class GameManager {
         if(this.field.getState()[0].some(value=>value)) return true;
         return false
     }
+    public changeCurrentMino() : void{
+
+    }
+
+    public makeNextMino(): void {
+        this.nextMinoDisplay.removeChild(this.nextMino);
+        this.currentMino = this.nextMino;
+        this.nextMino = new Minos();
+        this.nextMino.x = 1 * size.box;
+        this.nextMino.y = 0;
+        this.nextMinoDisplay.addChild(this.nextMino);
+        this.nextMinoDisplay.update();
+    }
+
 }
 
 export default GameManager;

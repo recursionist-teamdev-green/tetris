@@ -7,6 +7,7 @@ type Control = {
     retry: HTMLElement | null;
     canvas: HTMLElement | null;
     score: HTMLElement | null;
+    mini_canvas: HTMLElement | null;
 };
 
 const control: Control = {
@@ -15,11 +16,13 @@ const control: Control = {
     retry: document.getElementById("retry"),
     canvas: document.getElementById("canvas"),
     score: document.getElementById("score"),
+    mini_canvas: document.getElementById("miniCanvas"),
 };
 
 let gameManager: GameManager;
 let stage: createjs.Stage;
 let score: createjs.Stage;
+let nextMino: createjs.Stage;
 
 const init = () => {
     (control.canvas as HTMLCanvasElement).style.border = "2px solid #555";
@@ -30,10 +33,16 @@ const init = () => {
 
     score = new createjs.Stage("score");
     stage = new createjs.Stage("canvas");
-    gameManager = new GameManager(stage, score);
-    gameManager.init();
+    nextMino = new createjs.Stage("miniCanvas");
+  
+    (control.mini_canvas as HTMLCanvasElement).style.border = "2px solid #555";
+    (control.mini_canvas as HTMLCanvasElement).width = size.box * 4;
+    (control.mini_canvas as HTMLCanvasElement).height = size.box * 4;
 
+    gameManager = new GameManager(stage, score,nextMino);
+    gameManager.init();
 };
+
 
 (control.pause as HTMLElement).addEventListener("click", () => {
     gameManager.pause();
