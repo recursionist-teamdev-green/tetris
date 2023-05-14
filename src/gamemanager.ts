@@ -126,7 +126,6 @@ class GameManager {
             // gameFieldにFix
             this.field.setState(this.currentMino);
             this.clearCurrentMino();
-
             // 次のMino描画
             this.drawNextMino();
         }
@@ -136,13 +135,13 @@ class GameManager {
             const clearList = this.field.checkRows();
             this.score += (clearList as number[]).length * 10;
             this.field.clearRows(clearList as number[]);
-            this.clearCurrentMino();
-            
-            // 次のMino描画
-            this.drawNextMino();
-            console.log("よばれた2");
-        }
 
+            this.field.drawField(this.stage);
+            this.drawScore();
+            this.stage.addChild(this.currentMino)
+            this.stage.update();
+        }
+        
         // 一番上が１つでも埋まれば終了
         if (this.checkEnd()) {
             this.gameEnd();
@@ -228,9 +227,6 @@ class GameManager {
         this.drawScore();
         // 次のminoを生成
         this.makeNextMino();
-        // fieldの状態を描画
-        this.stage.addChild(this.currentMino);
-        this.stage.update();
     }
 
 
@@ -249,9 +245,6 @@ class GameManager {
         if (this.field.getState()[0].some(value => value)) return true;
         return false
     }
-    public changeCurrentMino(): void {
-
-    }
 
     public makeNextMino(): void {
         this.nextMinoDisplay.removeChild(this.nextMino);
@@ -259,10 +252,7 @@ class GameManager {
         this.currentMino.x = 4 * size.box;
         this.currentMino.y = 0;
 
-
         this.nextMino = new Minos();
-        this.nextMino.x = 1 * size.box;
-        this.nextMino.y = 0;
 
         // ステージ更新
         this.stage.addChild(this.currentMino);
