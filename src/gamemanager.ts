@@ -56,16 +56,14 @@ class GameManager {
         this.stage.removeAllEventListeners();
         document.removeEventListener("keydown", this.moveCtrl);
         createjs.Ticker.reset();
-        this.stage.update();
-        console.log(this.stage.children)
     }
 
     public start(): void {
         //Todo tetromino classをnewする形に変更する
 //        this.currentMino = new Minos();
+        this.makeNextMino();
         this.stage.addChild(this.currentMino);
         this.drawScore();
-        this.makeNextMino();
         this.stage.update();
 
         // ポーズの場合、動かさない
