@@ -53,7 +53,7 @@ const init = () => {
 });
 
 (control.retry as HTMLElement).addEventListener("click", () => {
-    gameManager.init();
+    gameManager.retry();
 });
 
 window.addEventListener("load", init);
