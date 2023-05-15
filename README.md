@@ -14,6 +14,10 @@
 
 一行消すごとに＋10pt加算されていきます。
 
+<div align=center>
+<img src="./images/demoPlay.gif">
+</div>
+
 ## 操作方法
 → : 右移動
 
