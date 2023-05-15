@@ -5,6 +5,7 @@ import { size } from "./components/block/sizeConfig";
 type GameState = {
     Gameover: boolean;
     Paused: boolean;
+    Playing: boolean
 };
 
 //init()、start()、pause()、retry()でゲームの進行を管理する
@@ -26,6 +27,7 @@ class GameManager {
         this.state = {
             Gameover: false,
             Paused: false,
+            Playing: false,
         };
         this.score = 0;
         this.scoreEle = new createjs.Text("", "24px serif", "DarkRed");
@@ -42,27 +44,30 @@ class GameManager {
         this.field.init();
 
         //スコアの初期化
-        this.scoreStage.addChild(this.scoreEle)
         this.score = 0;
 
         //gameStateの初期化
         this.state.Gameover = false;
         this.state.Paused = false;
+        this.state.Playing = false;
 
         // stageの初期化
-        this.stage.removeAllChildren();
-        this.stage.removeAllEventListeners();
-        document.removeEventListener("keydown", this.moveCtrl);
-        createjs.Ticker.reset();
+        this.resetStage();
     }
 
     public start(): void {
-        //Todo tetromino classをnewする形に変更する
+        // プレイ中は操作しない
+        if(this.state.Playing) return
+
         // テトロミノ生成 / 描画
         this.makeNextMino();
+
         // スコア描画
         this.drawScore();
         this.stage.update();
+
+        // ステータス更新
+        this.state.Playing = true;
 
         // キーボード操作
         document.addEventListener("keydown", this.moveCtrl);
@@ -115,6 +120,23 @@ class GameManager {
     public retry(): void {
         this.init();
         this.start();
+    }
+
+    public resetStage(): void{
+        // stage
+        this.stage.removeAllChildren();
+        this.stage.removeAllEventListeners();
+        document.removeEventListener("keydown", this.moveCtrl);
+        createjs.Ticker.reset();
+        this.stage.update();
+
+        // nextMino
+        this.nextMinoDisplay.removeAllChildren();
+        this.nextMinoDisplay.update();
+        
+        // score
+        this.drawScore();
+        this.scoreStage.update();
     }
 
     public update(): void {
@@ -232,6 +254,7 @@ class GameManager {
 
     public drawScore(): void {
         this.scoreEle.text = `Score: ${this.score}`;
+        this.scoreStage.addChild(this.scoreEle)
         this.scoreStage.update();
     }
 
@@ -259,6 +282,10 @@ class GameManager {
         this.nextMinoDisplay.addChild(this.nextMino);
         this.stage.update();
         this.nextMinoDisplay.update();
+    }
+
+    public getState(): GameState{
+        return this.state;
     }
 
 }

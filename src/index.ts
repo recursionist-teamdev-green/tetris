@@ -46,17 +46,14 @@ const init = () => {
 
 (control.pause as HTMLElement).addEventListener("click", () => {
     gameManager.pause();
-    console.log("pause button clicked");
 });
 
 (control.start as HTMLElement).addEventListener("click", () => {
     gameManager.start();
-    console.log("start button clicked");
 });
 
 (control.retry as HTMLElement).addEventListener("click", () => {
     gameManager.retry();
-    console.log("retry button clicked");
 });
 
 window.addEventListener("load", init);
