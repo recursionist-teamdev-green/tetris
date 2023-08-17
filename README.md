@@ -36,6 +36,6 @@ https://tetris-greenteam.vercel.app
 
 |カテゴリ|技術|
 |----|----|
-|フロントエンド | Typescript createJS|
+|フロントエンド | Typescript createJS Bootstrap|
 |インフラ|Vercel|
 |...etc|webpack|
