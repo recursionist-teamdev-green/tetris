@@ -259,8 +259,8 @@ class GameManager {
     }
 
     public gameEnd(): void {
-        this.retry();
         alert(`あなたのスコアは ${this.score} です！`)
+        this.retry();
 
     }
 
